@@ -1,6 +1,5 @@
 section
   header
-    color: #fff
     margin-bottom: 1em
 
     +media($mobile)
@@ -15,8 +14,6 @@ section
   margin-bottom: 2rem
 
   .overview-wrapper
-    color: #fff
-
     +media($desktop)
       +span-columns(8)
   .form-wrapper
@@ -34,17 +31,21 @@ section
       +transition(all linear .3s)
       background: rgba(#fff, .5)
       display: inline-block
+      padding: .5em
+      color: $dark-gray
+
       &::-webkit-input-placeholder
-        color: #fff
+        color: $dark-gray
       &:-moz-placeholder
-        color: #fff
+        color: $dark-gray
       &::-moz-placeholder
-        color: #fff
+        color: $dark-gray
       &:-ms-input-placeholder
-        color: #fff
+        color: $dark-gray
 
       &:focus
         background: #fff
+        box-shadow: 0 0 0
 
         &::-webkit-input-placeholder
           color: $gray
@@ -57,7 +58,6 @@ section
 
 .warning
   text-align: center
-  color: darken($asphalt, 10)
   padding: 6rem 0
   .fa-stack
     font-size: 3em

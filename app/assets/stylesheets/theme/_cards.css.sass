@@ -1,9 +1,12 @@
 .cards-wrapper
   +clearfix
   position: relative
+
   .card
+    box-shadow: 0 0.2em 0 0 $gray
     background: #fff
     margin-bottom: 2rem
+    border-radius: $base-border-radius
 
     +media($mobile)
       +span-columns(12 of 12)
@@ -22,6 +25,7 @@
       +clearfix
       color: #fff
       margin-bottom: .5em
+      border-radius: $base-border-radius $base-border-radius 0 0
       h4
         overflow: hidden
         text-overflow: ellipsis
@@ -37,7 +41,7 @@
     .card-body
       +pad(1rem)
       +clearfix
-
+      border-radius: 0 0 $base-border-radius $base-border-radius
 
     .meta
       font-size: .9em
@@ -49,7 +53,6 @@
       .fa
         font-size: .9em
 
-
     .headline
       height: 3em
       font-style: italic
@@ -59,6 +62,11 @@
       margin: -1rem
       padding: 1rem
       background: lighten($gray, 10)
+
+      .fa
+        margin-right: 1em
+        color: #fff
+
 
     &.female
       header
