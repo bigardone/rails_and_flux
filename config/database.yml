@@ -1,0 +1,15 @@
+default: &default
+  adapter: postgresql
+  host: localhost
+
+development:
+  <<: *default
+  database: rails_and_flux_development
+
+test:
+  <<: *default
+  database: rails_and_flux_test
+
+production:
+  <<: *default
+  database: rails_and_flux_production
