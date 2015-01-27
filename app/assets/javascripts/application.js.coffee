@@ -6,8 +6,6 @@
 #= require moment
 #= require js-routes
 #= require nprogress
-#= require nprogress-turbolinks
-#= require nprogress-ajax
 #= require pubsub
 
 #= require_tree ./utils
@@ -23,6 +21,5 @@ $ ->
     showSpinner: false
     ease: 'ease'
     speed: 500
-
 
   React.render React.createElement(PeopleSection, null), document.getElementById('people_list')
