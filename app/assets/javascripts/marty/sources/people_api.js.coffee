@@ -8,5 +8,8 @@
         search: searchText
       )
 
+    NProgress.start()
+
     @get(req).then (res) ->
+      NProgress.done()
       PeopleSourceActionCreators.receivePeople res.body
