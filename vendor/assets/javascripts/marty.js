@@ -1,88 +1,119 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Marty=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./index.js":[function(require,module,exports){
-var _ = require('underscore');
-var state = require('./lib/state');
-var create = require('./lib/create');
-var Dispatcher = require('./lib/dispatcher');
+"use strict";
+
+var _ = require("underscore");
+var state = require("./lib/state");
+var create = require("./lib/create");
+var Dispatcher = require("./lib/dispatcher");
+var Diagnostics = require("./lib/diagnostics");
 
 var Marty = _.extend({
-  version: '0.8.3',
+  version: "0.8.13",
+  Diagnostics: Diagnostics,
   Dispatcher: Dispatcher.getCurrent()
 }, state, create);
 
 module.exports = Marty;
-},{"./lib/create":12,"./lib/dispatcher":14,"./lib/state":17,"underscore":39}],1:[function(require,module,exports){
-var constants = require('./index');
 
-module.exports = constants(['ACTION_STARTING', 'ACTION_DONE', 'ACTION_FAILED']);
+},{"./lib/create":12,"./lib/diagnostics":13,"./lib/dispatcher":14,"./lib/state":18,"underscore":39}],1:[function(require,module,exports){
+"use strict";
+
+var constants = require("./index");
+
+module.exports = constants(["ACTION_STARTING", "ACTION_DONE", "ACTION_FAILED"]);
+
 },{"./index":2}],2:[function(require,module,exports){
-module.exports = require('../lib/constants');
+"use strict";
+
+module.exports = require("../lib/constants");
+
 },{"../lib/constants":11}],3:[function(require,module,exports){
-var constants = require('./index');
+"use strict";
 
-module.exports = constants(['PENDING', 'FAILED', 'DONE']);
+var constants = require("./index");
+
+module.exports = constants(["PENDING", "FAILED", "DONE"]);
+
 },{"./index":2}],4:[function(require,module,exports){
-function ActionHandlerNotFoundError(actionHandler, store) {
-  this.name = 'Action handler not found';
-  this.message = 'The action handler "' + actionHandler + '" could not be found';
+"use strict";
 
-  if (store && store.name) {
-    this.message += ' in the ' + store.name + ' store';
+function ActionHandlerNotFoundError(actionHandler, store) {
+  this.name = "Action handler not found";
+  this.message = "The action handler \"" + actionHandler + "\" could not be found";
+
+  if (store && store.displayName) {
+    this.message += " in the " + store.displayName + " store";
   }
 }
 
 ActionHandlerNotFoundError.prototype = Error.prototype;
 
 module.exports = ActionHandlerNotFoundError;
-},{}],5:[function(require,module,exports){
-function ActionPredicateUndefinedError(actionHandler, store) {
-  this.name = 'Action predicate undefined';
-  this.message = 'The action predicate for "' + actionHandler + '" was undefined';
 
-  if (store && store.name) {
-    this.message += ' in the ' + store.name + ' store';
+},{}],5:[function(require,module,exports){
+"use strict";
+
+function ActionPredicateUndefinedError(actionHandler, store) {
+  this.name = "Action predicate undefined";
+  this.message = "The action predicate for \"" + actionHandler + "\" was undefined";
+
+  if (store && store.displayName) {
+    this.message += " in the " + store.displayName + " store";
   }
 }
 
 ActionPredicateUndefinedError.prototype = Error.prototype;
 
 module.exports = ActionPredicateUndefinedError;
+
 },{}],6:[function(require,module,exports){
+"use strict";
+
 function CompoundError(errors) {
   this.errors = errors;
-  this.name = 'Compound error';
+  this.name = "Compound error";
 }
 
 CompoundError.prototype = Error.prototype;
 
 module.exports = CompoundError;
+
 },{}],7:[function(require,module,exports){
+"use strict";
+
 function NotFoundError(message) {
-  this.name = 'Not found';
-  this.message = message || '';
+  this.name = "Not found";
+  this.message = message || "Not found";
   this.status = 404;
 }
 
 NotFoundError.prototype = Error.prototype;
 
 module.exports = NotFoundError;
+
 },{}],8:[function(require,module,exports){
+"use strict";
+
 function UnkownStoreError(store) {
-  this.name = 'Unknown store';
-  this.message = 'Unknown store ' + store;
+  this.name = "Unknown store";
+  this.message = "Unknown store " + store;
 }
 
 UnkownStoreError.prototype = Error.prototype;
 
 module.exports = UnkownStoreError;
-},{}],9:[function(require,module,exports){
-var _ = require('underscore');
-var uuid = require('./utils/uuid');
-var RESERVED_KEYWORDS = ['dispatch'];
-var Dispatcher = require('./dispatcher');
-var ActionPayload = require('./actionPayload');
-var ActionConstants = require('../constants/actions');
-var serializeError = require('./utils/serializeError');
 
+},{}],9:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var log = require("./logger");
+var uuid = require("./utils/uuid");
+var RESERVED_KEYWORDS = ["dispatch"];
+var Dispatcher = require("./dispatcher");
+var ActionPayload = require("./actionPayload");
+var ActionConstants = require("../constants/actions");
+var serializeError = require("./utils/serializeError");
 
 function ActionCreators(options) {
   var creator = this;
@@ -92,35 +123,34 @@ function ActionCreators(options) {
 
   _.each(RESERVED_KEYWORDS, function (keyword) {
     if (options[keyword]) {
-      throw new Error(keyword + ' is a reserved keyword');
+      throw new Error(keyword + " is a reserved keyword");
     }
   });
 
-
   this.getActionType = getActionType;
 
-  _.extend.apply(_, [
-    this,
-    wrapFunctions(options)
-  ].concat(options.mixins));
+  _.extend.apply(_, [this, wrapFunctions(options)].concat(options.mixins));
 
   function getActionType(name) {
-    return name.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toUpperCase();
+    return name.replace(/([a-z\d])([A-Z]+)/g, "$1_$2").replace(/[-\s]+/g, "_").toUpperCase();
   }
 
   function wrapFunctions(functions) {
     _.each(functions, function (func, name) {
       var actionType;
       var properties = {};
+      var dispatchedAction;
 
       if (_.isFunction(func)) {
         if (func.properties) {
           if (!func.properties.type) {
-            throw new Error('Unknown action type');
+            throw new Error("Unknown action type");
           }
 
           actionType = func.properties.type;
-          properties = _.omit(func.properties, 'type');
+          properties = _.omit(func.properties, "type");
+        } else if (options.types && options.types[name]) {
+          actionType = options.types[name];
         } else {
           actionType = creator.getActionType(name);
         }
@@ -141,7 +171,7 @@ function ActionCreators(options) {
 
           if (result) {
             if (_.isFunction(result.then)) {
-              result.then(dispatchDone, dispatchError);
+              result.then(dispatchDone, dispatchFailed);
             } else {
               dispatchDone();
             }
@@ -151,34 +181,55 @@ function ActionCreators(options) {
 
           return result;
         } catch (e) {
-          dispatchError(e);
+          var error = "An error occured when creating a '" + actionType + "' action in ";
+          error += (creator.displayName || creator.id || " ") + "#" + name;
+          log.error(error, e);
+
+          dispatchFailed(e);
 
           throw e;
         }
 
         function actionContext() {
           return _.extend({
-            dispatch: function () {
-              return dispatch({
+            dispatch: (function (_dispatch) {
+              var _dispatchWrapper = function dispatch() {
+                return _dispatch.apply(this, arguments);
+              };
+
+              _dispatchWrapper.toString = function () {
+                return _dispatch.toString();
+              };
+
+              return _dispatchWrapper;
+            })(function () {
+              dispatchedAction = dispatch({
+                id: actionId,
                 type: actionType,
                 handlers: handlers,
                 arguments: arguments
               }, properties);
-            }
+
+              return dispatchedAction;
+            })
           }, creator);
         }
 
         function dispatchStarting() {
+          if (properties.silent) {
+            return;
+          }
+
           dispatch({
-            verbose: true,
-            type: actionType + '_STARTING',
+            internal: true,
+            type: actionType + "_STARTING",
             arguments: [{
               id: actionId
             }]
           }, properties);
 
           dispatch({
-            verbose: true,
+            internal: true,
             type: ActionConstants.ACTION_STARTING,
             arguments: [{
               id: actionId,
@@ -190,9 +241,13 @@ function ActionCreators(options) {
         }
 
         function dispatchDone() {
+          if (properties.silent) {
+            return;
+          }
+
           dispatch({
-            verbose: true,
-            type: actionType + '_DONE',
+            internal: true,
+            type: actionType + "_DONE",
             arguments: [{
               id: actionId,
               handlers: handlers
@@ -200,7 +255,7 @@ function ActionCreators(options) {
           }, properties);
 
           dispatch({
-            verbose: true,
+            internal: true,
             type: ActionConstants.ACTION_DONE,
             arguments: [{
               id: actionId,
@@ -209,12 +264,12 @@ function ActionCreators(options) {
           }, properties);
         }
 
-        function dispatchError(err) {
+        function dispatchFailed(err) {
           err = serializeError(err);
 
           dispatch({
-            verbose: true,
-            type: actionType + '_FAILED',
+            internal: true,
+            type: actionType + "_FAILED",
             arguments: [{
               error: err,
               id: actionId,
@@ -223,7 +278,7 @@ function ActionCreators(options) {
           }, properties);
 
           dispatch({
-            verbose: true,
+            internal: true,
             type: ActionConstants.ACTION_FAILED,
             arguments: [{
               error: err,
@@ -231,6 +286,11 @@ function ActionCreators(options) {
               handlers: handlers
             }]
           }, properties);
+
+          if (dispatchedAction) {
+            dispatchedAction.rollback();
+            dispatchedAction.error = err;
+          }
         }
       };
     });
@@ -246,11 +306,14 @@ function ActionCreators(options) {
 }
 
 module.exports = ActionCreators;
-},{"../constants/actions":1,"./actionPayload":10,"./dispatcher":14,"./utils/serializeError":25,"./utils/uuid":26,"underscore":39}],10:[function(require,module,exports){
-var _ = require('underscore');
-var uuid = require('./utils/uuid');
-var cloneState = require('./utils/cloneState');
-var StatusConstants = require('../constants/status');
+
+},{"../constants/actions":1,"./actionPayload":10,"./dispatcher":14,"./logger":16,"./utils/serializeError":25,"./utils/uuid":26,"underscore":39}],10:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var uuid = require("./utils/uuid");
+var Diagnostics = require("./diagnostics");
+var StatusConstants = require("../constants/status");
 
 function ActionPayload(options) {
   options || (options = {});
@@ -265,41 +328,42 @@ function ActionPayload(options) {
   this.type = actionType(options.type);
   this.arguments = _.toArray(options.arguments);
 
+  this.error = null;
   this.toJSON = toJSON;
   this.toString = toString;
   this.rollback = rollback;
-  this.verbose = !!options.verbose;
+  this.internal = !!options.internal;
   this.addViewHandler = addViewHandler;
   this.addStoreHandler = addStoreHandler;
   this.addRollbackHandler = addRollbackHandler;
   this.timestamp = options.timestamp || new Date();
 
-  Object.defineProperty(this, 'handlers', {
-    get: function () {
+  Object.defineProperty(this, "handlers", {
+    get: function get() {
       return handlers;
     }
   });
 
-  Object.defineProperty(this, 'status', {
-    get: function () {
+  Object.defineProperty(this, "status", {
+    get: function get() {
       return status;
     }
   });
 
-  Object.defineProperty(this, 'pending', {
-    get: function () {
+  Object.defineProperty(this, "pending", {
+    get: function get() {
       return status === StatusConstants.PENDING;
     }
   });
 
-  Object.defineProperty(this, 'failed', {
-    get: function () {
+  Object.defineProperty(this, "failed", {
+    get: function get() {
       return status === StatusConstants.FAILED;
     }
   });
 
-  Object.defineProperty(this, 'done', {
-    get: function () {
+  Object.defineProperty(this, "done", {
+    get: function get() {
       return status === StatusConstants.DONE;
     }
   });
@@ -317,16 +381,7 @@ function ActionPayload(options) {
   }
 
   function toJSON() {
-    var json = _.pick(this,
-      'id',
-      'type',
-      'source',
-      'creator',
-      'verbose',
-      'handlers',
-      'arguments',
-      'timestamp'
-    );
+    var json = _.pick(this, "id", "type", "error", "source", "creator", "internal", "handlers", "arguments", "timestamp");
 
     json.status = this.status.toString();
 
@@ -335,30 +390,30 @@ function ActionPayload(options) {
 
   function rollback() {
     _.each(rollbackHandlers, function (rollback) {
-      rollback();
-    });
+      rollback(this.error);
+    }, this);
   }
 
-  function addViewHandler(name, view, lastState) {
+  function addViewHandler(name, view) {
     var storeHandler = handlers[handlers.length - 1];
 
     var viewHandler = {
       name: name,
       error: null,
-      id: uuid.small(),
-      state: {
-        after: null,
-        before: lastState
-      }
-    };
+      id: uuid.small() };
 
     storeHandler.views.push(viewHandler);
 
     return {
-      dispose: function () {
-        viewHandler.state.after = cloneState(view.state);
+      dispose: function dispose() {
+        if (Diagnostics.devtoolsEnabled) {
+          var state = view.state;
+          if (state) {
+            viewHandler.state = JSON.parse(JSON.stringify(state));
+          }
+        }
       },
-      failed: function (err) {
+      failed: function failed(err) {
         viewHandler.error = err;
       }
     };
@@ -368,23 +423,24 @@ function ActionPayload(options) {
     var handler = {
       views: [],
       error: null,
-      type: 'Store',
+      type: "Store",
       id: uuid.small(),
-      store: store.displayName,
       name: handlerName,
-      state: {
-        before: cloneState(store.getState()),
-        after: undefined
-      },
-    };
+      store: store.displayName };
 
     handlers.push(handler);
 
     return {
-      dispose: function () {
-        handler.state.after = cloneState(store.getState());
+      dispose: function dispose() {
+        if (Diagnostics.devtoolsEnabled) {
+          var state = (store.serialize || store.getState)();
+
+          if (state) {
+            handler.state = JSON.parse(JSON.stringify(state));
+          }
+        }
       },
-      failed: function (err) {
+      failed: function failed(err) {
         handler.error = err;
       }
     };
@@ -402,8 +458,11 @@ function ActionPayload(options) {
 }
 
 module.exports = ActionPayload;
-},{"../constants/status":3,"./utils/cloneState":24,"./utils/uuid":26,"underscore":39}],11:[function(require,module,exports){
-var _ = require('underscore');
+
+},{"../constants/status":3,"./diagnostics":13,"./utils/uuid":26,"underscore":39}],11:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
 
 function constants(obj) {
   return toConstant(obj);
@@ -439,7 +498,7 @@ function constants(obj) {
   }
 
   function createActionCreator(actionType) {
-    var constantActionCreator = function (actionCreator, properties) {
+    var constantActionCreator = function constantActionCreator(actionCreator, properties) {
       if (!actionCreator) {
         actionCreator = dispatchActionCreator;
       } else if (!_.isFunction(actionCreator)) {
@@ -469,17 +528,20 @@ function constants(obj) {
 }
 
 module.exports = constants;
-},{"underscore":39}],12:[function(require,module,exports){
-var _ = require('underscore');
-var Store = require('./store');
-var constants = require('./constants');
-var Dispatcher = require('./dispatcher');
-var StateSource = require('./stateSource');
-var StateMixin = require('./mixins/stateMixin');
-var ActionCreators = require('./actionCreators');
-var EventEmitter = require('events').EventEmitter;
 
-var STORE_CHANGED_EVENT = 'store-changed';
+},{"underscore":39}],12:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var Store = require("./store");
+var constants = require("./constants");
+var Dispatcher = require("./dispatcher");
+var StateSource = require("./stateSource");
+var StateMixin = require("./mixins/stateMixin");
+var ActionCreators = require("./actionCreators");
+var EventEmitter = require("events").EventEmitter;
+
+var STORE_CHANGED_EVENT = "store-changed";
 
 var stores = [];
 var emitter = new EventEmitter();
@@ -502,7 +564,7 @@ function addStoreChangeListener(callback, context) {
   emitter.on(STORE_CHANGED_EVENT, callback);
 
   return {
-    dispose: function () {
+    dispose: function dispose() {
       emitter.removeListener(STORE_CHANGED_EVENT, callback);
     }
   };
@@ -554,50 +616,36 @@ function defaults(marty, options) {
 
   return options;
 }
-},{"./actionCreators":9,"./constants":11,"./dispatcher":14,"./mixins/stateMixin":16,"./stateSource":18,"./store":23,"events":28,"underscore":39}],13:[function(require,module,exports){
-var ACTION_STARTED = 'action-started';
-var EventEmitter = require('events').EventEmitter;
-var diagnosticEvents = new EventEmitter();
+
+},{"./actionCreators":9,"./constants":11,"./dispatcher":14,"./mixins/stateMixin":17,"./stateSource":19,"./store":24,"events":28,"underscore":39}],13:[function(require,module,exports){
+"use strict";
 
 var diagnostics = {
   log: log,
   trace: log,
   warn: warn,
   enabled: false,
-  onAction: onAction,
-  dispatchingAction: dispatchingAction
-};
+  devtoolsEnabled: false };
 
 module.exports = diagnostics;
 
-function dispatchingAction(action) {
-  diagnosticEvents.emit(ACTION_STARTED, action);
-}
-
 function log() {
   if (diagnostics.enabled) {
-    console.log.apply(console, arguments);
+    console && console.log.apply(console, arguments);
   }
 }
 
 function warn() {
   if (diagnostics.enabled) {
-    console.warn.apply(console, arguments);
+    console && console.warn.apply(console, arguments);
   }
 }
 
-function onAction(callback) {
-  diagnosticEvents.on(ACTION_STARTED, callback);
+},{}],14:[function(require,module,exports){
+"use strict";
 
-  return {
-    dispose: function () {
-      diagnosticEvents.removeListener(ACTION_STARTED, callback);
-    }
-  };
-}
-},{"events":28}],14:[function(require,module,exports){
-var uuid = require('./utils/uuid');
-var Dispatcher = require('flux').Dispatcher;
+var uuid = require("./utils/uuid");
+var Dispatcher = require("flux").Dispatcher;
 var instance = new Dispatcher();
 
 instance.id = uuid.small();
@@ -607,9 +655,12 @@ Dispatcher.getCurrent = function () {
 };
 
 module.exports = Dispatcher;
+
 },{"./utils/uuid":26,"flux":34}],15:[function(require,module,exports){
-var when = require('./when');
-var NotFoundError = require('../errors/notFound');
+"use strict";
+
+var when = require("./when");
+var NotFoundError = require("../errors/notFound");
 
 module.exports = {
   done: done,
@@ -618,51 +669,76 @@ module.exports = {
   notFound: notFound
 };
 
-function pending() {
+function pending(id, store) {
   return fetchResult({
+    id: id,
     pending: true,
-    status: 'PENDING'
-  });
+    status: "PENDING"
+  }, store);
 }
 
-function failed(error) {
+function failed(error, id, store) {
   return fetchResult({
+    id: id,
     error: error,
     failed: true,
-    status: 'FAILED'
-  });
+    status: "FAILED"
+  }, store);
 }
 
-function done(result) {
+function done(result, id, store) {
   return fetchResult({
+    id: id,
     done: true,
-    status: 'DONE',
+    status: "DONE",
     result: result
-  });
+  }, store);
 }
 
-function notFound() {
-  return failed(new NotFoundError());
+function notFound(id, store) {
+  return failed(new NotFoundError(), id, store);
 }
 
-function fetchResult(result) {
+function fetchResult(result, store) {
   result.when = when;
   result._isFetchResult = true;
 
+  if (store) {
+    result.store = store.displayName || store.id;
+  }
+
   return result;
 }
+
 },{"../errors/notFound":7,"./when":27}],16:[function(require,module,exports){
-var _ = require('underscore');
-var uuid = require('../utils/uuid');
-var Diagnostics = require('../diagnostics');
-var cloneState = require('../utils/cloneState');
-var reservedKeys = ['listenTo', 'getState', 'getInitialState'];
+"use strict";
+
+var _ = require("underscore");
+
+if (console) {
+  module.exports = console;
+} else {
+  module.exports = {
+    log: _.noop,
+    warn: _.noop,
+    error: _.noop
+  };
+}
+
+},{"underscore":39}],17:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var log = require("../logger");
+var uuid = require("../utils/uuid");
+var Diagnostics = require("../diagnostics");
+var reservedKeys = ["listenTo", "getState", "getInitialState"];
 
 function StateMixin(options) {
   var config, instanceMethods;
 
   if (!options) {
-    throw new Error('The state mixin is expecting some options');
+    throw new Error("The state mixin is expecting some options");
   }
 
   if (isStore(options)) {
@@ -673,29 +749,29 @@ function StateMixin(options) {
   }
 
   var mixin = _.extend({
-    onStoreChanged: function (state, store) {
-      Diagnostics.trace(
-        store.displayName, 'store has changed. The', this.displayName, 'component (' + this._marty.id + ') is updating'
-      );
+    onStoreChanged: function onStoreChanged(state, store) {
+      Diagnostics.trace(store.displayName, "store has changed. The", this.displayName, "component (" + this._marty.id + ") is updating");
 
-      if (this._lifeCycleState === 'UNMOUNTED') {
-        Diagnostics.warn(
-          'Trying to set the state of ', this.displayName, 'component (' + this._marty.id + ') which is unmounted'
-        );
+      if (this._lifeCycleState === "UNMOUNTED") {
+        log.warn("Trying to set the state of ", this.displayName, "component (" + this._marty.id + ") which is unmounted");
       } else {
         this.setState(this.tryGetState(store));
       }
     },
-    tryGetState: function (store) {
+    tryGetState: function tryGetState(store) {
       var handler;
 
       if (store && store.action) {
-        handler = store.action.addViewHandler(this.displayName, this, this._marty.lastState);
+        handler = store.action.addViewHandler(this.displayName, this);
       }
 
       try {
         return this.getState();
       } catch (e) {
+        var errorMessage = "An error occured while trying to get the latest state in the view " + this.displayName;
+
+        log.error(errorMessage, e, this);
+
         if (handler) {
           handler.failed(e);
         }
@@ -704,26 +780,19 @@ function StateMixin(options) {
       } finally {
         if (handler) {
           handler.dispose();
-          this._marty.lastState = cloneState(this.state);
         }
       }
     },
-    componentDidMount: function () {
-      Diagnostics.trace(
-        'The', this.displayName,
-        'component (' + this._marty.id + ') has mounted.'
-      );
+    componentDidMount: function componentDidMount() {
+      Diagnostics.trace("The", this.displayName, "component (" + this._marty.id + ") has mounted.");
 
       this._marty.listeners = _.map(config.stores, function (store) {
-        Diagnostics.trace(
-          'The', this.displayName,
-          'component  (' + this._marty.id + ') is listening to the', store.displayName, 'store'
-        );
+        Diagnostics.trace("The", this.displayName, "component  (" + this._marty.id + ") is listening to the", store.displayName, "store");
 
         return store.addChangeListener(this.onStoreChanged);
       }, this);
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
       var oldProps = this.props;
       this.props = nextProps;
 
@@ -732,11 +801,8 @@ function StateMixin(options) {
       this.props = oldProps;
       this.setState(newState);
     },
-    componentWillUnmount: function () {
-      Diagnostics.trace(
-        'The', this.displayName, 'component (' + this._marty.id + ') is unmounting.',
-        'It is listening to', this._marty.listeners.length, 'stores'
-      );
+    componentWillUnmount: function componentWillUnmount() {
+      Diagnostics.trace("The", this.displayName, "component (" + this._marty.id + ") is unmounting.", "It is listening to", this._marty.listeners.length, "stores");
 
       _.each(this._marty.listeners, function (listener) {
         listener.dispose();
@@ -744,10 +810,10 @@ function StateMixin(options) {
 
       this._marty.listeners = [];
     },
-    getState: function () {
+    getState: function getState() {
       return config.getState(this);
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
       var el = this._currentElement;
 
       if (!this.displayName && el && el.type) {
@@ -758,8 +824,7 @@ function StateMixin(options) {
 
       this._marty = {
         listeners: [],
-        id: uuid.small(),
-        lastState: undefined
+        id: uuid.small()
       };
 
       if (options.getInitialState) {
@@ -767,10 +832,6 @@ function StateMixin(options) {
       }
 
       this.state = _.extend(this.state, this.getState());
-
-      if (Diagnostics.enabled) {
-        this._marty.lastState = cloneState(this.state);
-      }
 
       return this.state;
     }
@@ -781,14 +842,14 @@ function StateMixin(options) {
   function storeMixinConfig(store) {
     return {
       stores: [store],
-      getState: function () {
+      getState: function getState() {
         return store.getState();
       }
     };
   }
 
   function simpleMixinConfig(options) {
-    var stores = (options.listenTo || []);
+    var stores = options.listenTo || [];
     var storesToGetStateFrom = findStoresToGetStateFrom(options);
 
     if (!_.isArray(stores)) {
@@ -796,7 +857,7 @@ function StateMixin(options) {
     }
 
     if (!areStores(stores)) {
-      throw new Error('Can only listen to stores');
+      throw new Error("Can only listen to stores");
     }
 
     stores = stores.concat(_.values(storesToGetStateFrom));
@@ -847,9 +908,12 @@ function StateMixin(options) {
 }
 
 module.exports = StateMixin;
-},{"../diagnostics":13,"../utils/cloneState":24,"../utils/uuid":26,"underscore":39}],17:[function(require,module,exports){
-var _ = require('underscore');
-var UnknownStoreError = require('../errors/unknownStore');
+
+},{"../diagnostics":13,"../logger":16,"../utils/uuid":26,"underscore":39}],18:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var UnknownStoreError = require("../errors/unknownStore");
 
 module.exports = {
   setState: setState,
@@ -893,67 +957,69 @@ function serializeState() {
   });
 
   state.toString = function () {
-    return '(window.__marty||(window.__marty={})).state=' + JSON.stringify(state);
+    return "(window.__marty||(window.__marty={})).state=" + JSON.stringify(state);
   };
 
   state.toJSON = function () {
-    return _.omit(state, 'toString', 'toJSON');
+    return _.omit(state, "toString", "toJSON");
   };
 
   return state;
 }
-},{"../errors/unknownStore":8,"underscore":39}],18:[function(require,module,exports){
-var _ = require('underscore');
-var HttpStateSource = require('./stateSources/http');
-var JSONStorageStateSource = require('./stateSources/jsonStorage');
-var LocalStorageStateSource = require('./stateSources/localStorage');
-var SessionStorageStateSource = require('./stateSources/sessionStorage');
+
+},{"../errors/unknownStore":8,"underscore":39}],19:[function(require,module,exports){
+"use strict";
+
+var _ = require("underscore");
+var HttpStateSource = require("./stateSources/http");
+var JSONStorageStateSource = require("./stateSources/jsonStorage");
+var LocalStorageStateSource = require("./stateSources/localStorage");
+var SessionStorageStateSource = require("./stateSources/sessionStorage");
 
 function StateSource(options) {
   options = options || {};
   extendStateSource(this, options);
 
   function extendStateSource(stateSource, options) {
-    _.extend.apply(_, [stateSource].concat(
-      options,
-      options.mixins,
-      stateSourceMixin(options))
-    );
+    _.extend.apply(_, [stateSource].concat(options, options.mixins, stateSourceMixin(options)));
   }
 
   function stateSourceMixin(options) {
     switch (options.type) {
-      case 'http':
+      case "http":
         return HttpStateSource(options);
-      case 'jsonStorage':
+      case "jsonStorage":
         return JSONStorageStateSource(options);
-      case 'localStorage':
+      case "localStorage":
         return LocalStorageStateSource(options);
-      case 'sessionStorage':
+      case "sessionStorage":
         return SessionStorageStateSource(options);
     }
   }
 }
 
 module.exports = StateSource;
-},{"./stateSources/http":19,"./stateSources/jsonStorage":20,"./stateSources/localStorage":21,"./stateSources/sessionStorage":22,"underscore":39}],19:[function(require,module,exports){
-require('isomorphic-fetch');
-require('es6-promise').polyfill();
 
-var _ = require('underscore');
-var CONTENT_TYPE = 'Content-Type';
-var JSON_CONTENT_TYPE = 'application/json';
+},{"./stateSources/http":20,"./stateSources/jsonStorage":21,"./stateSources/localStorage":22,"./stateSources/sessionStorage":23,"underscore":39}],20:[function(require,module,exports){
+"use strict";
+
+require("isomorphic-fetch");
+require("es6-promise").polyfill();
+
+var _ = require("underscore");
+var CONTENT_TYPE = "Content-Type";
+var JSON_CONTENT_TYPE = "application/json";
 
 function HttpStateSource(mixinOptions) {
 
   mixinOptions = mixinOptions || {};
 
-  var defaultBaseUrl = '';
-  var methods = ['get', 'put', 'post', 'delete'];
+  var defaultBaseUrl = "";
+  var methods = ["get", "put", "post", "delete", "patch"];
 
   var mixin = {
     _isHttpStateSource: true,
-    request: function (options) {
+    request: function request(options) {
       if (!options.headers) {
         options.headers = {};
       }
@@ -968,26 +1034,30 @@ function HttpStateSource(mixinOptions) {
           throw res;
         }
 
-        if (isJson(res) && res._body) {
-          res.body = JSON.parse(res._body);
+        if (isJson(res)) {
+          return res.json().then(function (body) {
+            res.body = body;
+
+            return res;
+          });
         }
 
         return res;
       });
 
       function isJson(res) {
-        var contentTypes = getHeader(res, CONTENT_TYPE);
+        var contentTypes = res.headers.get(CONTENT_TYPE);
 
-        _.isArray(contentTypes) || (contentTypes = [contentTypes]);
+        if (!_.isArray(contentTypes)) {
+          if (contentTypes === undefined || contentTypes === null) {
+            contentTypes = [];
+          } else {
+            contentTypes = [contentTypes];
+          }
+        }
 
         return _.any(contentTypes, function (contentType) {
           return contentType.indexOf(JSON_CONTENT_TYPE) !== -1;
-        });
-      }
-
-      function getHeader(res, name) {
-        return _.find(res.headers.map, function (value, key) {
-          return key.toLowerCase() === name.toLowerCase();
         });
       }
 
@@ -1017,15 +1087,15 @@ function requestOptions(method, baseUrl, options) {
   options.method = method.toLowerCase();
 
   if (baseUrl) {
-    var separator = '';
+    var separator = "";
     var firstCharOfUrl = options.url[0];
     var lastCharOfBaseUrl = baseUrl[baseUrl.length - 1];
 
     // Do some text wrangling to make sure concatenation of base url
     // stupid people (i.e. me)
-    if (lastCharOfBaseUrl !== '/' && firstCharOfUrl !== '/') {
-      separator = '/';
-    } else if (lastCharOfBaseUrl === '/' && firstCharOfUrl === '/') {
+    if (lastCharOfBaseUrl !== "/" && firstCharOfUrl !== "/") {
+      separator = "/";
+    } else if (lastCharOfBaseUrl === "/" && firstCharOfUrl === "/") {
       options.url = options.url.substring(1);
     }
 
@@ -1036,25 +1106,33 @@ function requestOptions(method, baseUrl, options) {
 }
 
 module.exports = HttpStateSource;
-},{"es6-promise":33,"isomorphic-fetch":37,"underscore":39}],20:[function(require,module,exports){
+
+},{"es6-promise":33,"isomorphic-fetch":38,"underscore":39}],21:[function(require,module,exports){
+"use strict";
+
 function JSONStorageStateSource(options) {
   options = options || {};
 
-  var defaultNamespace = '';
+  var defaultNamespace = "";
   var defaultStorage = localStorage;
 
-  var mixin  = {
+  var mixin = {
     _isJSONStorageStateSource: true,
-    get: function (key) {
+    get: function get(key) {
       var raw = getStorage().getItem(getNamespacedKey(key));
+
+      if (!raw) {
+        return raw;
+      }
+
       try {
         var payload = JSON.parse(raw);
         return payload.value;
       } catch (e) {
-        throw new Error('Unable to parse JSON from storage');
+        throw new Error("Unable to parse JSON from storage");
       }
     },
-    set: function (key, value) {
+    set: function set(key, value) {
       // Wrap the value in an object so as to preserve it's type
       // during serialization.
       var payload = {
@@ -1081,18 +1159,21 @@ function JSONStorageStateSource(options) {
 }
 
 module.exports = JSONStorageStateSource;
-},{}],21:[function(require,module,exports){
+
+},{}],22:[function(require,module,exports){
+"use strict";
+
 function LocalStorageStateSource(options) {
   options = options || {};
 
-  var defaultNamespace = '';
+  var defaultNamespace = "";
 
-  var mixin  = {
+  var mixin = {
     _isLocalStorageStateSource: true,
-    get: function (key) {
+    get: function get(key) {
       return localStorage.getItem(getNamespacedKey(key));
     },
-    set: function (key, value) {
+    set: function set(key, value) {
       localStorage.setItem(getNamespacedKey(key), value);
     }
   };
@@ -1109,18 +1190,21 @@ function LocalStorageStateSource(options) {
 }
 
 module.exports = LocalStorageStateSource;
-},{}],22:[function(require,module,exports){
+
+},{}],23:[function(require,module,exports){
+"use strict";
+
 function SessionStorageStateSource(options) {
 
   options = options || {};
-  var defaultNamespace = '';
+  var defaultNamespace = "";
 
-  var mixin  = {
+  var mixin = {
     _isSessionStorageStateSource: true,
-    get: function (key) {
+    get: function get(key) {
       return sessionStorage.getItem(getNamespacedKey(key));
     },
-    set: function (key, value) {
+    set: function set(key, value) {
       sessionStorage.setItem(getNamespacedKey(key), value);
     }
   };
@@ -1137,22 +1221,27 @@ function SessionStorageStateSource(options) {
 }
 
 module.exports = SessionStorageStateSource;
-},{}],23:[function(require,module,exports){
-var CHANGE_EVENT = 'changed';
-var _ = require('underscore');
-var uuid = require('./utils/uuid');
-var fetchResult = require('./fetch');
-var Dispatcher = require('./dispatcher');
-var Diagnostics = require('./diagnostics');
-var CompoundError = require('../errors/compound');
-var NotFoundError = require('../errors/notFound');
-var EventEmitter = require('events').EventEmitter;
-var StatusConstants = require('../constants/status');
-var ActionHandlerNotFoundError = require('../errors/actionHandlerNotFound');
-var ActionPredicateUndefinedError = require('../errors/actionPredicateUndefined');
 
-var REQUIRED_FUNCTIONS = ['getInitialState'];
-var RESERVED_FUNCTIONS = ['dispose', 'clear'];
+},{}],24:[function(require,module,exports){
+"use strict";
+
+var CHANGE_EVENT = "changed";
+var _ = require("underscore");
+var log = require("./logger");
+var uuid = require("./utils/uuid");
+var fetchResult = require("./fetch");
+var Dispatcher = require("./dispatcher");
+var Diagnostics = require("./diagnostics");
+var CompoundError = require("../errors/compound");
+var NotFoundError = require("../errors/notFound");
+var EventEmitter = require("events").EventEmitter;
+var StatusConstants = require("../constants/status");
+var ActionHandlerNotFoundError = require("../errors/actionHandlerNotFound");
+var ActionPredicateUndefinedError = require("../errors/actionPredicateUndefined");
+
+var RESERVED_FUNCTIONS = ["getState"];
+var REQUIRED_FUNCTIONS = ["getInitialState"];
+var PROTECTED_FUNCTIONS = ["clear", "dispose"];
 
 Store.defaultMaxListeners = 10000000;
 
@@ -1187,7 +1276,7 @@ function Store(options) {
   emitter.setMaxListeners(options.maxListeners || Store.defaultMaxListeners);
 
   validateOptions(options);
-  extendStore(this, _.omit(options, RESERVED_FUNCTIONS));
+  extendStore(this, _.omit(options, _.union(PROTECTED_FUNCTIONS, RESERVED_FUNCTIONS)));
   validateHandlers(this);
 
   this.dispatchToken = dispatcher.register(_.bind(this.handleAction, this));
@@ -1197,26 +1286,42 @@ function Store(options) {
     state = defaultState;
   }
 
-  Object.defineProperty(this, 'state', {
-    get: function () {
+  Object.defineProperty(this, "state", {
+    get: function get() {
       return getState();
     },
-    set: function (value) {
+    set: function set(value) {
       this.setState(value);
     }
   });
 
   function validateOptions(options) {
-    var errors = [];
+    var missingFunctions = [];
 
-    _.each(REQUIRED_FUNCTIONS, function (functionName) {
-      if (!_.has(options, functionName)) {
-        errors.push('You must implement ' + functionName);
+    _.each(RESERVED_FUNCTIONS, function (functionName) {
+      if (options[functionName]) {
+        if (options.displayName) {
+          functionName += " in " + options.displayName;
+        }
+
+        Diagnostics.warn(functionName + " is reserved for use by Marty. Please use a different name");
       }
     });
 
-    if (errors.length) {
-      throw new Error(errors.join('. '));
+    _.each(REQUIRED_FUNCTIONS, function (functionName) {
+      if (!_.has(options, functionName)) {
+        missingFunctions.push(functionName);
+      }
+    });
+
+    if (missingFunctions.length) {
+      var error = "You must implement " + missingFunctions.join(",");
+
+      if (options.displayName) {
+        error += " in " + options.displayName;
+      }
+
+      throw new Error(error);
     }
   }
 
@@ -1240,7 +1345,7 @@ function Store(options) {
     });
 
     var mixins = _.map(options.mixins, function (mixin) {
-      return _.omit(mixin, 'handlers');
+      return _.omit(mixin, "handlers");
     });
 
     _.extend.apply(_, [store, options].concat(mixins));
@@ -1253,6 +1358,11 @@ function Store(options) {
 
     if (_.isFunction(options.dispose)) {
       options.dispose.call(store);
+    }
+
+    if (store.dispatchToken) {
+      dispatcher.unregister(store.dispatchToken);
+      store.dispatchToken = undefined;
     }
   }
 
@@ -1273,8 +1383,13 @@ function Store(options) {
       };
     }
 
+    _.defaults(options, {
+      locally: _.noop,
+      remotely: _.noop
+    });
+
     if (!options || !options.id) {
-      throw new Error('must specify an id');
+      throw new Error("must specify an id");
     }
 
     result = dependencyResult(options);
@@ -1289,12 +1404,12 @@ function Store(options) {
       error = failedFetches[options.id];
 
       if (error) {
-        return fetchResult.failed(error);
+        return fetchResult.failed(error, options.id, store);
       }
     }
 
     if (fetchInProgress[options.id]) {
-      return fetchResult.pending();
+      return fetchResult.pending(options.id, store);
     }
 
     return tryAndGetLocally() || tryAndGetRemotely();
@@ -1312,11 +1427,11 @@ function Store(options) {
         }
 
         finished();
-        return fetchResult.done(result);
+        return fetchResult.done(result, options.id, store);
       } catch (error) {
         failed(error);
 
-        return fetchResult.failed(error);
+        return fetchResult.failed(error, options.id, store);
       }
     }
 
@@ -1339,12 +1454,12 @@ function Store(options) {
                 notFound();
                 hasChanged();
               }
-            }).catch(function (error) {
+            })["catch"](function (error) {
               failed(error);
               hasChanged();
             });
 
-            return fetchResult.pending();
+            return fetchResult.pending(options.id, store);
           } else {
             fetchHistory[options.id] = true;
             result = tryAndGetLocally();
@@ -1355,10 +1470,21 @@ function Store(options) {
           }
         }
 
+        Diagnostics.warn(promiseNotReturnedWarning());
+
         return notFound();
       } catch (error) {
         return failed(error);
       }
+    }
+
+    function promiseNotReturnedWarning() {
+      var inStore = "";
+      if (store.displayName) {
+        inStore = " in " + store.displayName;
+      }
+
+      return "The remote fetch for '" + options.id + "'" + inStore + " did not return a promise and the state was " + "not present after remotely finished executing. " + "This might be because you forgot to return a promise.";
     }
 
     function finished() {
@@ -1373,11 +1499,11 @@ function Store(options) {
 
       finished();
 
-      return fetchResult.failed(error);
+      return fetchResult.failed(error, options.id, store);
     }
 
     function notFound() {
-      return failed(new NotFoundError());
+      return failed(new NotFoundError(), options.id, store);
     }
   }
 
@@ -1400,11 +1526,11 @@ function Store(options) {
         }
 
         if (dependencyErrors.length) {
-          return fetchResult.failed(new CompoundError(dependencyErrors));
+          return fetchResult.failed(new CompoundError(dependencyErrors), options.id, store);
         }
 
         if (pending) {
-          return fetchResult.pending();
+          return fetchResult.pending(options.id, store);
         }
       } else {
         if (!options.dependsOn.done) {
@@ -1413,8 +1539,6 @@ function Store(options) {
       }
     }
   }
-
-
 
   function clear() {
     failedFetches = {};
@@ -1442,12 +1566,12 @@ function Store(options) {
       callback = _.bind(callback, context);
     }
 
-    Diagnostics.trace('The', store.displayName, 'store (' + store.id + ') is adding a change listener');
+    Diagnostics.trace("The", store.displayName, "store (" + store.id + ") is adding a change listener");
     emitter.on(CHANGE_EVENT, callback);
 
     return {
-      dispose: function () {
-        Diagnostics.trace('The', store.displayName, 'store (' + store.id + ') is disposing of a change listener');
+      dispose: function dispose() {
+        Diagnostics.trace("The", store.displayName, "store (" + store.id + ") is disposing of a change listener");
         emitter.removeListener(CHANGE_EVENT, callback);
       }
     };
@@ -1476,6 +1600,16 @@ function Store(options) {
               throw new ActionHandlerNotFoundError(handlerName, this);
             }
           } catch (e) {
+            var errorMessage = "An error occured while trying to handle an '" + action.type.toString() + "' action in the action handler `" + handlerName + "`";
+
+            var displayName = store.displayName || store.id;
+
+            if (displayName) {
+              errorMessage += " within the store " + displayName;
+            }
+
+            log.error(errorMessage, e, action);
+
             handler.failed(e);
             throw e;
           } finally {
@@ -1546,13 +1680,10 @@ function Store(options) {
 }
 
 module.exports = Store;
-},{"../constants/status":3,"../errors/actionHandlerNotFound":4,"../errors/actionPredicateUndefined":5,"../errors/compound":6,"../errors/notFound":7,"./diagnostics":13,"./dispatcher":14,"./fetch":15,"./utils/uuid":26,"events":28,"underscore":39}],24:[function(require,module,exports){
-function cloneState() {
-  return null;
-}
 
-module.exports = cloneState;
-},{}],25:[function(require,module,exports){
+},{"../constants/status":3,"../errors/actionHandlerNotFound":4,"../errors/actionPredicateUndefined":5,"../errors/compound":6,"../errors/notFound":7,"./diagnostics":13,"./dispatcher":14,"./fetch":15,"./logger":16,"./utils/uuid":26,"events":28,"underscore":39}],25:[function(require,module,exports){
+"use strict";
+
 function serializeError(error) {
   if (!error) {
     return null;
@@ -1569,26 +1700,33 @@ function serializeError(error) {
 }
 
 module.exports = serializeError;
+
 },{}],26:[function(require,module,exports){
-var format = require('util').format;
+"use strict";
+
+var format = require("util").format;
 
 function uuid() {
-  return format('%s%s-%s-%s-%s-%s%s%s', s4(), s4(), s4(), s4(), s4(), s4(), s4(), s4());
+  return format("%s%s-%s-%s-%s-%s%s%s", s4(), s4(), s4(), s4(), s4(), s4(), s4(), s4());
 }
 
 function s4() {
-  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  return Math.floor((1 + Math.random()) * 65536).toString(16).substring(1);
 }
 
 module.exports = {
   generate: uuid,
-  small: function () {
+  small: function small() {
     return uuid().substring(0, 6);
   }
 };
+
 },{"util":32}],27:[function(require,module,exports){
-var _ = require('underscore');
-var StatusConstants = require('../constants/status');
+"use strict";
+
+var _ = require("underscore");
+var log = require("./logger");
+var StatusConstants = require("../constants/status");
 
 when.all = all;
 when.join = join;
@@ -1599,32 +1737,50 @@ function when(handlers) {
   var handler = handlers[this.status.toLowerCase()];
 
   if (!handler) {
-    throw new Error('Could not find a ' + this.status + ' handler');
+    throw new Error("Could not find a " + this.status + " handler");
   }
 
-  switch (this.status) {
-    case StatusConstants.PENDING.toString():
-      return handler.call(handlers);
-    case StatusConstants.FAILED.toString():
-      return handler.call(handlers, this.error);
-    case StatusConstants.DONE.toString():
-      return handler.call(handlers, this.result);
-    default:
-      throw new Error('Unknown fetch result status');
+  try {
+    switch (this.status) {
+      case StatusConstants.PENDING.toString():
+        return handler.call(handlers);
+      case StatusConstants.FAILED.toString():
+        return handler.call(handlers, this.error);
+      case StatusConstants.DONE.toString():
+        return handler.call(handlers, this.result);
+      default:
+        throw new Error("Unknown fetch result status");
+    }
+  } catch (e) {
+    var errorMessage = "An error occured when handling the DONE state of ";
+
+    if (this.id) {
+      errorMessage += "the fetch '" + this.id + "'";
+    } else {
+      errorMessage += "a fetch";
+    }
+
+    if (this.store) {
+      errorMessage += " from the store " + this.store;
+    }
+
+    log.error(errorMessage, e);
+
+    throw e;
   }
 }
 
-function join(/* fetchResults, handlers */) {
+function join() {
   return all(_.initial(arguments), _.last(arguments));
 }
 
 function all(fetchResults, handlers) {
   if (!fetchResults || !handlers) {
-    throw new Error('No fetch results or handlers specified');
+    throw new Error("No fetch results or handlers specified");
   }
 
   if (!_.isArray(fetchResults) || _.any(fetchResults, notFetchResult)) {
-    throw new Error('Must specify a set of fetch results');
+    throw new Error("Must specify a set of fetch results");
   }
 
   var context = {
@@ -1660,8 +1816,7 @@ function aggregateStatus(fetchResults) {
   for (var i = fetchResults.length - 1; i >= 0; i--) {
     var status = fetchResults[i].status;
 
-    if (status === StatusConstants.FAILED.toString() ||
-        status === StatusConstants.PENDING.toString()) {
+    if (status === StatusConstants.FAILED.toString() || status === StatusConstants.PENDING.toString()) {
       return status;
     }
   }
@@ -1670,7 +1825,9 @@ function aggregateStatus(fetchResults) {
 }
 
 module.exports = when;
-},{"../constants/status":3,"underscore":39}],28:[function(require,module,exports){
+/* fetchResults, handlers */
+
+},{"../constants/status":3,"./logger":16,"underscore":39}],28:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3943,14 +4100,28 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 },{}],37:[function(require,module,exports){
-require('fetch');
-
-},{"fetch":38}],38:[function(require,module,exports){
 (function() {
   'use strict';
 
-  if (window.fetch) {
+  if (self.fetch) {
     return
+  }
+
+  function normalizeName(name) {
+    if (typeof name !== 'string') {
+      name = name.toString();
+    }
+    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+      throw new TypeError('Invalid character in header field name')
+    }
+    return name.toLowerCase()
+  }
+
+  function normalizeValue(value) {
+    if (typeof value !== 'string') {
+      value = value.toString();
+    }
+    return value
   }
 
   function Headers(headers) {
@@ -3972,6 +4143,8 @@ require('fetch');
   }
 
   Headers.prototype.append = function(name, value) {
+    name = normalizeName(name)
+    value = normalizeValue(value)
     var list = this.map[name]
     if (!list) {
       list = []
@@ -3981,24 +4154,24 @@ require('fetch');
   }
 
   Headers.prototype['delete'] = function(name) {
-    delete this.map[name]
+    delete this.map[normalizeName(name)]
   }
 
   Headers.prototype.get = function(name) {
-    var values = this.map[name]
+    var values = this.map[normalizeName(name)]
     return values ? values[0] : null
   }
 
   Headers.prototype.getAll = function(name) {
-    return this.map[name] || []
+    return this.map[normalizeName(name)] || []
   }
 
   Headers.prototype.has = function(name) {
-    return this.map.hasOwnProperty(name)
+    return this.map.hasOwnProperty(normalizeName(name))
   }
 
   Headers.prototype.set = function(name, value) {
-    this.map[name] = [value]
+    this.map[normalizeName(name)] = [normalizeValue(value)]
   }
 
   // Instead of iterable for now.
@@ -4011,48 +4184,127 @@ require('fetch');
 
   function consumed(body) {
     if (body.bodyUsed) {
-      return Promise.reject(new TypeError('Body already consumed'))
+      return Promise.reject(new TypeError('Already read'))
     }
     body.bodyUsed = true
   }
 
+  function fileReaderReady(reader) {
+    return new Promise(function(resolve, reject) {
+      reader.onload = function() {
+        resolve(reader.result)
+      }
+      reader.onerror = function() {
+        reject(reader.error)
+      }
+    })
+  }
+
+  function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader()
+    reader.readAsArrayBuffer(blob)
+    return fileReaderReady(reader)
+  }
+
+  function readBlobAsText(blob) {
+    var reader = new FileReader()
+    reader.readAsText(blob)
+    return fileReaderReady(reader)
+  }
+
+  var support = {
+    blob: 'FileReader' in self && 'Blob' in self && (function() {
+      try {
+        new Blob();
+        return true
+      } catch(e) {
+        return false
+      }
+    })(),
+    formData: 'FormData' in self,
+    XDomainRequest: 'XDomainRequest' in self
+  }
+
   function Body() {
-    this._body = null
     this.bodyUsed = false
 
-    this.arrayBuffer = function() {
-      throw new Error('Not implemented yet')
+    if (support.blob) {
+      this._initBody = function(body) {
+        this._bodyInit = body
+        if (typeof body === 'string') {
+          this._bodyText = body
+        } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+          this._bodyBlob = body
+        } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+          this._bodyFormData = body
+        } else if (!body) {
+          this._bodyText = ''
+        } else {
+          throw new Error('unsupported BodyInit type')
+        }
+      }
+
+      this.blob = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as blob')
+        } else {
+          return Promise.resolve(new Blob([this._bodyText]))
+        }
+      }
+
+      this.arrayBuffer = function() {
+        return this.blob().then(readBlobAsArrayBuffer)
+      }
+
+      this.text = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return readBlobAsText(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as text')
+        } else {
+          return Promise.resolve(this._bodyText)
+        }
+      }
+    } else {
+      this._initBody = function(body) {
+        this._bodyInit = body
+        if (typeof body === 'string') {
+          this._bodyText = body
+        } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+          this._bodyFormData = body
+        } else if (!body) {
+          this._bodyText = ''
+        } else {
+          throw new Error('unsupported BodyInit type')
+        }
+      }
+
+      this.text = function() {
+        var rejected = consumed(this)
+        return rejected ? rejected : Promise.resolve(this._bodyText)
+      }
     }
 
-    this.blob = function() {
-      var rejected = consumed(this)
-      return rejected ? rejected : Promise.resolve(new Blob([this._body]))
-    }
-
-    this.formData = function() {
-      var rejected = consumed(this)
-      return rejected ? rejected : Promise.resolve(decode(this._body))
+    if (support.formData) {
+      this.formData = function() {
+        return this.text().then(decode)
+      }
     }
 
     this.json = function() {
-      var rejected = consumed(this)
-      if (rejected) {
-        return rejected
-      }
-
-      var body = this._body
-      return new Promise(function(resolve, reject) {
-        try {
-          resolve(JSON.parse(body))
-        } catch (ex) {
-          reject(ex)
-        }
-      })
-    }
-
-    this.text = function() {
-      var rejected = consumed(this)
-      return rejected ? rejected : Promise.resolve(this._body)
+      return this.text().then(JSON.parse)
     }
 
     return this
@@ -4069,12 +4321,17 @@ require('fetch');
   function Request(url, options) {
     options = options || {}
     this.url = url
-    this._body = options.body
-    this.credentials = options.credentials || null
+
+    this.credentials = options.credentials || 'omit'
     this.headers = new Headers(options.headers)
     this.method = normalizeMethod(options.method || 'GET')
     this.mode = options.mode || null
     this.referrer = null
+
+    if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
+      throw new TypeError('Body not allowed for GET or HEAD requests')
+    }
+    this._initBody(options.body)
   }
 
   function decode(body) {
@@ -4106,10 +4363,41 @@ require('fetch');
     var self = this
 
     return new Promise(function(resolve, reject) {
-      var xhr = new XMLHttpRequest()
+      var legacyCors = false;
+      if (support.XDomainRequest) {
+        var origin = location.protocol + '//' + location.host;
+        legacyCors = (/^\/\//.test(self.url) ? location.protocol + self.url : self.url).substring(0, origin.length) !== origin;
+      }
+      var xhr = legacyCors ? new XDomainRequest() : new XMLHttpRequest()
+
+      if (legacyCors) {
+        xhr.getAllResponseHeaders = function() {
+          return 'Content-Type: '+xhr.contentType;
+        };
+      } else if (self.credentials === 'cors') {
+        xhr.withCredentials = true;
+      }
+
+      function responseURL() {
+        if ('responseURL' in xhr) {
+          return xhr.responseURL
+        }
+
+        // Avoid security warnings on getResponseHeader when not allowed by CORS
+        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+          return xhr.getResponseHeader('X-Request-URL')
+        }
+
+        return;
+      }
 
       xhr.onload = function() {
         var status = (xhr.status === 1223) ? 204 : xhr.status
+
+        // If XDomainRequest there is no status code so just hope for the best...
+        if (legacyCors) {
+          status = 200;
+        }
         if (status < 100 || status > 599) {
           reject(new TypeError('Network request failed'))
           return
@@ -4117,16 +4405,22 @@ require('fetch');
         var options = {
           status: status,
           statusText: xhr.statusText,
-          headers: headers(xhr)
+          headers: headers(xhr),
+          url: responseURL()
         }
-        resolve(new Response(xhr.responseText, options))
+        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+        resolve(new Response(body, options))
       }
 
       xhr.onerror = function() {
         reject(new TypeError('Network request failed'))
       }
 
-      xhr.open(self.method, self.url)
+      xhr.open(self.method, self.url, true)
+
+      if ('responseType' in xhr && support.blob) {
+        xhr.responseType = 'blob'
+      }
 
       self.headers.forEach(function(name, values) {
         values.forEach(function(value) {
@@ -4134,29 +4428,43 @@ require('fetch');
         })
       })
 
-      xhr.send((self._body === undefined) ? null : self._body)
+      xhr.send(typeof self._bodyInit === 'undefined' ? null : self._bodyInit)
     })
   }
 
   Body.call(Request.prototype)
 
-  function Response(body, options) {
-    this._body = body
+  function Response(bodyInit, options) {
+    if (!options) {
+      options = {}
+    }
+
+    this._initBody(bodyInit)
     this.type = 'default'
     this.url = null
     this.status = options.status
+    this.ok = this.status >= 200 && this.status < 300
     this.statusText = options.statusText
     this.headers = options.headers
+    this.url = options.url || ''
   }
 
   Body.call(Response.prototype)
 
-  window.fetch = function (url, options) {
+  self.Headers = Headers;
+  self.Request = Request;
+  self.Response = Response;
+
+  self.fetch = function (url, options) {
     return new Request(url, options).fetch()
   }
+  self.fetch.polyfill = true
 })();
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
+require('whatwg-fetch');
+
+},{"whatwg-fetch":37}],39:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
