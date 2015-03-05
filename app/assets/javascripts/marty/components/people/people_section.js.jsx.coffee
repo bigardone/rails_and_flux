@@ -4,15 +4,15 @@
   mixins: [PeopleStateMixin]
 
   _retrieveResultsPage: (pageNumber)->
-    PeopleSourceActionCreators.findPeople pageNumber, @state.textToFetch
+    PeopleActionCreators.findPeople pageNumber, @state.searchText
 
   _handleOnSearchSubmit: (searchText) ->
-    @state.textToFetch = searchText
-    PeopleSourceActionCreators.findPeople '', searchText
+    @state.searchText = searchText
+    PeopleActionCreators.findPeople '', searchText
 
   _handleOnResetClick: ->
-    @state.textToFetch = ''
-    PeopleSourceActionCreators.findPeople '', ''
+    @state.searchText = ''
+    PeopleActionCreators.findPeople '', ''
 
   _renderPending: ()->
     `<div className="warning">
@@ -50,7 +50,7 @@
       done: @_renderPeople
 
     `<div>
-      <PeopleSearch totalCount={this.state.meta.total_count} onFormSubmit={this._handleOnSearchSubmit} value={this.state.textToFetch}/>
+      <PeopleSearch totalCount={this.state.meta.total_count} onFormSubmit={this._handleOnSearchSubmit} value={this.state.searchText}/>
       <PaginatorSection totalPages={this.state.meta.total_pages} currentPage={this.state.meta.current_page} onPaginate={this._retrieveResultsPage}/>
       <div className="cards-wrapper">
         {responseNodes}
