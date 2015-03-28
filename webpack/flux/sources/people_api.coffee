@@ -14,4 +14,4 @@ PeopleAPI = Marty.createStateSource
 
     @get(req)
 
-module.export = PeopleAPI
+module.exports = PeopleAPI
