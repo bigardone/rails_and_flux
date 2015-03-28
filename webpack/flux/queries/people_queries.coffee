@@ -6,11 +6,10 @@ PeopleQueries = Marty.createQueries
   id: 'PeopleQueries'
 
   findPeople: (pageNumber, searchText)->
-    debugger
     PeopleAPI.findPeople(pageNumber, searchText)
-    .then (res) ->
-      console.log res
+    .then (res) =>
+      @dispatch PeopleConstants.RECEIVE_PEOPLE, res.body
     .catch (err) ->
-      console.log 'err'
+      console.log err
 
 module.exports = PeopleQueries

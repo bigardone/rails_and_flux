@@ -1,15 +1,16 @@
 React = require 'react'
+Marty = require 'marty'
 PeopleStateMixin = require '../../mixins/people_state_mixin'
 PeopleSearch = require './people_search'
 PersonCard = require './person_card'
 PaginatorSection = require '../paginator/paginator_section'
 PeopleQueries = require '../../queries/people_queries'
+PeopleStore = require '../../stores/people_store'
+ResetButton = require '../buttons/reset_button'
 
 
 PeopleSection = React.createClass
   displayName: 'PeopleSection'
-
-  mixins: [PeopleStateMixin]
 
   _retrieveResultsPage: (pageNumber)->
     PeopleQueries.findPeople pageNumber, @state.searchText
@@ -22,25 +23,9 @@ PeopleSection = React.createClass
     @state.searchText = ''
     PeopleQueries.findPeople '', ''
 
-  _renderPending: ()->
-    <div className="warning">
-      <span className="fa-stack">
-        <i className="fa fa-search fa-stack-2x"></i>
-      </span>
-      <h4>Searching...</h4>
-    </div>
-
-  _renderError: (error)->
-    <div className="warning">
-      <span className="fa-stack">
-        <i className="fa fa-exclamation-triangle fa-stack-2x"></i>
-      </span>
-      <h4>{error}</h4>
-    </div>
-
-  _renderPeople: (people)->
-    if people.length > 0
-      people.map (person) ->
+  _renderPeople: ()->
+    if @props.people.length > 0
+      @props.people.map (person) ->
         <PersonCard key={person.id} {...person}/>
     else
       <div className="warning">
@@ -48,23 +33,32 @@ PeopleSection = React.createClass
           <i className="fa fa-meh-o fa-stack-2x"></i>
         </span>
         <h4>No people found...</h4>
-        <ResetButton text="Reset filter" styleClass="btn" onResetClick={this._handleOnResetClick}/>
+        <ResetButton text="Reset filter" styleClass="btn" onResetClick={@_handleOnResetClick}/>
       </div>
 
   render: ->
-    responseNodes = @state.people.when
-      pending: @_renderPending
-      failed: @_renderError
-      done: @_renderPeople
-
     <div>
-      <PeopleSearch totalCount={this.state.meta.total_count} onFormSubmit={this._handleOnSearchSubmit} value={this.state.searchText}/>
-      <PaginatorSection totalPages={this.state.meta.total_pages} currentPage={this.state.meta.current_page} onPaginate={this._retrieveResultsPage}/>
+      <PeopleSearch totalCount={@props.meta.total_count} onFormSubmit={@_handleOnSearchSubmit} value={@props.searchText}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_retrieveResultsPage}/>
       <div className="cards-wrapper">
-        {responseNodes}
+        {@_renderPeople()}
       </div>
-      <PaginatorSection totalPages={this.state.meta.total_pages} currentPage={this.state.meta.current_page} onPaginate={this._retrieveResultsPage}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_retrieveResultsPage}/>
     </div>
 
 
-module.exports = PeopleSection
+module.exports = Marty.createContainer PeopleSection,
+  listenTo: PeopleStore
+  fetch:
+    people: ->
+      PeopleStore.findPeople '', ''
+    meta: ->
+      PeopleStore.paginationMeta()
+  pending: ->
+    @done
+      people: []
+      meta:
+          total_count: 0
+          total_pages: 0
+  failed: (errors)->
+    console.log errors

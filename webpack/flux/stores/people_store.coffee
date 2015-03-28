@@ -1,6 +1,5 @@
 Marty = require 'marty'
 PeopleConstants = require '../constants/people_constants'
-PeopleAPI = require '../sources/people_api'
 PeopleQueries = require '../queries/people_queries'
 
 PeopleStore = Marty.createStore
@@ -16,7 +15,7 @@ PeopleStore = Marty.createStore
     receivePeople: PeopleConstants.RECEIVE_PEOPLE
 
   findPeople: (pageNumber, searchText) ->
-    @.fetch
+    @fetch
       id: 'all-people'
       locally: () ->
         @state.people
