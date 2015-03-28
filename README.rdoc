@@ -10,7 +10,8 @@ This is a real use case application using:
 To test it, just fork it and run:
 
     $ bundle install
+    $ npm install
     $ db:setup
-    $ rails s
+    $ foreman start
 
 Happy coding!
