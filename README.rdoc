@@ -8,7 +8,8 @@ This is a real use case application using:
 * PostgreSQL full-text search
 
 To test it, just fork it and run:
-
+    
+    $ gem install foreman
     $ bundle install
     $ npm install
     $ db:setup
