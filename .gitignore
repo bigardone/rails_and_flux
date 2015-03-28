@@ -16,3 +16,4 @@
 /tmp
 .ruby-gemset
 .ruby-version
+node_modules
