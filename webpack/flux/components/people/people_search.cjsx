@@ -1,4 +1,7 @@
-@PeopleSearch = React.createClass
+React = require 'react'
+ResetButton = require '../buttons/reset_button'
+
+PeopleSearch = React.createClass
   displayName: 'PeopleSearch'
 
   getInitialState: ->
@@ -37,7 +40,7 @@
   _renderResetButton: ->
     return false unless @state.searchLength != 0
 
-    `<ResetButton text="Reset filter" styleClass="reset"  onResetClick={this._handleOnResetClick}/>`
+    <ResetButton text="Reset filter" styleClass="reset"  onResetClick={this._handleOnResetClick}/>
 
   _onChange: ->
     @setState
@@ -48,7 +51,7 @@
     personText = @_personText(count)
     overviewTitle = if @props.totalCount > 0 then "#{count} #{personText} found"
 
-    `<div className="filter-wrapper">
+    <div className="filter-wrapper">
       <div className="overview-wrapper">
         <h3>{overviewTitle}</h3>
         &nbsp;
@@ -59,4 +62,6 @@
           <input ref="search" placeholder="Search people..." type="search" value={this.state.value} onChange={this._onChange}/>
         </form>
       </div>
-    </div>`
+    </div>
+
+module.exports = PeopleSearch
