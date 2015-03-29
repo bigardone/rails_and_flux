@@ -1,8 +1,9 @@
-React = require 'react'
+React = require 'react/addons'
 PaginatorLink = require './paginator_link'
 
 PaginatorSection = React.createClass
   displayName: 'PaginatorSection'
+  mixins: [React.addons.PureRenderMixin]
 
   _handleOnClick: (pageNumber) ->
     @props.onPaginate(pageNumber)
