@@ -7,21 +7,24 @@ PaginatorSection = require '../paginator/paginator_section'
 PeopleQueries = require '../../queries/people_queries'
 PeopleStore = require '../../stores/people_store'
 ResetButton = require '../buttons/reset_button'
+PeopleActionCreators = require '../../actions/people_action_creators'
 
 
 PeopleSection = React.createClass
   displayName: 'PeopleSection'
 
   _retrieveResultsPage: (pageNumber)->
-    PeopleQueries.findPeople pageNumber, @state.searchText
+    PeopleQueries.findPeople pageNumber, @props.searchText
 
   _handleOnSearchSubmit: (searchText) ->
-    @state.searchText = searchText
+    PeopleActionCreators.setSearchText searchText
     PeopleQueries.findPeople '', searchText
 
   _handleOnResetClick: ->
-    @state.searchText = ''
     PeopleQueries.findPeople '', ''
+
+  _handleOnSearchChange: (value) ->
+    PeopleActionCreators.setSearchText value
 
   _renderPeople: ()->
     if @props.people.length > 0
@@ -54,6 +57,8 @@ module.exports = Marty.createContainer PeopleSection,
       PeopleStore.findPeople '', ''
     meta: ->
       PeopleStore.paginationMeta()
+    searchText: ->
+      PeopleStore.state.searchText
   pending: ->
     @done
       people: []

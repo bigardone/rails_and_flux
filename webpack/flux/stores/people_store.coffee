@@ -7,12 +7,14 @@ PeopleStore = Marty.createStore
   displayName: 'PeopleStore'
 
   getInitialState: ->
+    searchText: ''
     meta:
       total_pages: 0
       current_page: 0
 
   handlers:
     receivePeople: PeopleConstants.RECEIVE_PEOPLE
+    updateSearchText: PeopleConstants.SET_SEARCH_TEXT
 
   findPeople: (pageNumber, searchText) ->
     @fetch
@@ -29,6 +31,11 @@ PeopleStore = Marty.createStore
     @setState
       people: response.people
       meta: response.meta
+
+  updateSearchText: (text) ->
+    @setState
+      searchText: text
+
 
 module.exports = PeopleStore
 
