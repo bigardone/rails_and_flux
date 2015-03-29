@@ -60,10 +60,16 @@ module.exports = Marty.createContainer PeopleSection,
     searchText: ->
       PeopleStore.state.searchText
   pending: ->
-    @done
-      people: []
-      meta:
-          total_count: 0
-          total_pages: 0
+    <div className="warning">
+      <span className="fa-stack">
+        <i className="fa fa-search fa-stack-2x"></i>
+      </span>
+      <h4>Searching...</h4>
+    </div>
   failed: (errors)->
-    console.log errors
+    <div className="warning">
+      <span className="fa-stack">
+        <i className="fa fa-exclamation-triangle fa-stack-2x"></i>
+      </span>
+      <h4>{errors}</h4>
+    </div>
