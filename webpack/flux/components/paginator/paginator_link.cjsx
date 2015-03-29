@@ -1,5 +1,3 @@
-React = require 'react/addons'
-
 PaginatorLink = React.createClass
   displayName: 'PaginatorLink'
   mixins: [React.addons.PureRenderMixin]

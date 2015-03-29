@@ -1,5 +1,3 @@
-React = require 'react'
-
 ResetButton = React.createClass
   displayName: 'ResetButton'
 

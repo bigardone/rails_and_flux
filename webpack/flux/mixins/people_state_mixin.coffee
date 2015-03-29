@@ -1,4 +1,3 @@
-Marty = require 'marty'
 PeopleStore = require '../stores/people_store'
 
 PeopleStateMixin = Marty.createStateMixin

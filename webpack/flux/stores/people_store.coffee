@@ -1,4 +1,3 @@
-Marty = require 'marty'
 PeopleConstants = require '../constants/people_constants'
 PeopleQueries = require '../queries/people_queries'
 

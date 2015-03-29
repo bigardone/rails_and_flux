@@ -1,4 +1,5 @@
 var path = require("path");
+var webpack = require('webpack');
 
 module.exports = {
   context: __dirname,
@@ -20,5 +21,11 @@ module.exports = {
       { test: /\.cjsx$/, loaders: ["coffee", "cjsx"]},
       { test: /\.coffee$/,   loader: "coffee-loader"}
     ]
-  }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      'React': 'react',
+      'Marty': 'marty',
+    })
+  ]
 }

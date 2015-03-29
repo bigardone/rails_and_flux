@@ -1,4 +1,3 @@
-Marty = require 'marty'
 PeopleConstants = require '../../constants/people_constants'
 
 PeopleSourceActionCreators = Marty.createActionCreators

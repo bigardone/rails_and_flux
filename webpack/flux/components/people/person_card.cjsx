@@ -5,7 +5,6 @@ PersonCard = React.createClass
   displayName: 'PersonCard'
   mixins: [React.addons.PureRenderMixin]
 
-
   _birthDate: ->
     moment(@props.birth_date).format('D MMM YYYY')
 

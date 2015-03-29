@@ -1,4 +1,3 @@
-React = require 'react'
 ResetButton = require '../buttons/reset_button'
 
 PeopleSearch = React.createClass

@@ -1,5 +1,3 @@
-React = require 'react/addons'
-Marty = require 'marty'
 PeopleStateMixin = require '../../mixins/people_state_mixin'
 PeopleSearch = require './people_search'
 PersonCard = require './person_card'
@@ -11,8 +9,8 @@ PeopleActionCreators = require '../../actions/people_action_creators'
 
 
 PeopleSection = React.createClass
-  displayName: 'PeopleSection'
   mixins: [React.addons.PureRenderMixin]
+  displayName: 'PeopleSection'
 
   _retrieveResultsPage: (pageNumber)->
     PeopleQueries.findPeople pageNumber, @props.searchText

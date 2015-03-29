@@ -1,4 +1,3 @@
-Marty = require 'marty'
 PeopleSourceActionCreators = require '../actions/source_actions/people_source_action_creators'
 
 PeopleAPI = Marty.createStateSource
