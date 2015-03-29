@@ -1,2 +1,2 @@
 web: bundle exec spring rails server
-webpack: webpack --watch
+webpack: webpack --watch --colors
