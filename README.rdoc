@@ -1,4 +1,4 @@
-== Rails and Flux: A real use case
+foreman start -f Procfile.dev== Rails and Flux: A real use case
 
 This is a real use case application using:
 
@@ -13,6 +13,6 @@ To test it, just fork it and run:
     $ bundle install
     $ npm install
     $ db:setup
-    $ foreman start
+    $ foreman start -f Procfile.dev
 
 Happy coding!
