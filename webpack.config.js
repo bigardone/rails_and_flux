@@ -9,7 +9,9 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'app', 'assets', 'javascripts'),
     filename: "main.js",
-    publicPath: "/js/"
+    publicPath: "/js/",
+    devtoolModuleFilenameTemplate: '[resourcePath]',
+    devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
   },
   resolve: {
     extensions: ["", ".jsx", ".cjsx", ".coffee", ".js"]
