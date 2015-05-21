@@ -11,6 +11,7 @@ To test it, just fork it and run:
     
     $ gem install foreman
     $ bundle install
+    $ npm install -g webpack
     $ npm install
     $ db:setup
     $ foreman start -f Procfile.dev
