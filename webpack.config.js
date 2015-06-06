@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   context: __dirname,
   entry: {
-    main:  "./app/frontend/application.coffee",
+    main:  "./app/frontend/application.cjsx",
   },
   output: {
     path: path.join(__dirname, 'app', 'assets', 'javascripts'),
@@ -24,7 +24,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      'React': 'react',
+      'React': 'react/addons',
       'Marty': 'marty',
     })
   ]

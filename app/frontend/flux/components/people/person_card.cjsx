@@ -1,4 +1,3 @@
-React = require 'react/addons'
 classnames = require 'classnames'
 
 PersonCard = React.createClass

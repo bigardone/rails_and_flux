@@ -1,5 +1,3 @@
-PeopleSourceActionCreators = require '../actions/source_actions/people_source_action_creators'
-
 PeopleAPI = Marty.createStateSource
   id: 'PeopleAPI'
   type: 'http'
@@ -10,6 +8,9 @@ PeopleAPI = Marty.createStateSource
       search: searchText
     )
 
-    @get(url)
+    @get(url).then (res) ->
+      if res.ok then return res.json()
+
+      throw new Error('Error while fetching people', res)
 
 module.exports = PeopleAPI

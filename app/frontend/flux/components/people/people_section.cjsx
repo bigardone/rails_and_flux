@@ -1,29 +1,24 @@
-PeopleStateMixin = require '../../mixins/people_state_mixin'
 PeopleSearch = require './people_search'
 PersonCard = require './person_card'
 PaginatorSection = require '../paginator/paginator_section'
-PeopleQueries = require '../../queries/people_queries'
-PeopleStore = require '../../stores/people_store'
 ResetButton = require '../buttons/reset_button'
-PeopleActionCreators = require '../../actions/people_action_creators'
-
 
 PeopleSection = React.createClass
-  mixins: [React.addons.PureRenderMixin]
   displayName: 'PeopleSection'
 
   _retrieveResultsPage: (pageNumber)->
-    PeopleQueries.findPeople pageNumber, @props.searchText
+    @app.people.queries.findPeople pageNumber, @props.searchText
 
   _handleOnSearchSubmit: (searchText) ->
-    PeopleActionCreators.setSearchText searchText
-    PeopleQueries.findPeople '', searchText
+    @app.people.actionCreators.setSearchText searchText
+    @app.people.queries.findPeople '', searchText
 
   _handleOnResetClick: ->
-    PeopleQueries.findPeople '', ''
+    @app.people.actionCreators.setSearchText ''
+    @app.people.queries.findPeople '', ''
 
   _handleOnSearchChange: (value) ->
-    PeopleActionCreators.setSearchText value
+    @app.people.actionCreators.setSearchText value
 
   _renderPeople: ()->
     if @props.people.length > 0
@@ -50,14 +45,14 @@ PeopleSection = React.createClass
 
 
 module.exports = Marty.createContainer PeopleSection,
-  listenTo: PeopleStore
+  listenTo: 'people.store'
   fetch:
     people: ->
-      PeopleStore.findPeople '', ''
+      @app.people.store.findPeople '', ''
     meta: ->
-      PeopleStore.paginationMeta()
+      @app.people.store.getState().meta
     searchText: ->
-      PeopleStore.state.searchText
+      @app.people.store.getState().searchText
   pending: ->
     <div className="warning">
       <span className="fa-stack">

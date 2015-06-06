@@ -1,13 +1,12 @@
-PeopleAPI = require '../sources/people_api'
 PeopleConstants = require '../constants/people_constants'
 
 PeopleQueries = Marty.createQueries
   id: 'PeopleQueries'
 
   findPeople: (pageNumber, searchText)->
-    PeopleAPI.findPeople(pageNumber, searchText)
+    @app.people.sources.findPeople(pageNumber, searchText)
     .then (res) =>
-      @dispatch PeopleConstants.RECEIVE_PEOPLE, res.body
+      @dispatch PeopleConstants.RECEIVE_PEOPLE, res
     .catch (err) ->
       console.log err
 
