@@ -4,11 +4,11 @@ var webpack = require('webpack');
 module.exports = {
   context: __dirname,
   entry: {
-    main:  "./webpack/main.coffee",
+    main:  "./app/frontend/application.coffee",
   },
   output: {
     path: path.join(__dirname, 'app', 'assets', 'javascripts'),
-    filename: "main.js",
+    filename: "application_bundle.js",
     publicPath: "/js/",
     devtoolModuleFilenameTemplate: '[resourcePath]',
     devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
@@ -18,8 +18,6 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel-loader'},
-      { test: /\.jsx$/, loader: "jsx-loader?insertPragma=React.DOM" },
       { test: /\.cjsx$/, loaders: ["coffee", "cjsx"]},
       { test: /\.coffee$/,   loader: "coffee-loader"}
     ]
