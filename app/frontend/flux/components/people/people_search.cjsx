@@ -1,6 +1,6 @@
 ResetButton = require '../buttons/reset_button'
 
-PeopleSearch = React.createClass
+module.exports = React.createClass
   displayName: 'PeopleSearch'
 
   getInitialState: ->
@@ -62,5 +62,3 @@ PeopleSearch = React.createClass
         </form>
       </div>
     </div>
-
-module.exports = PeopleSearch

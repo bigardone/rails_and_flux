@@ -1,7 +1,6 @@
 PeopleConstants = require '../constants/people_constants'
-PeopleQueries = require '../queries/people_queries'
 
-PeopleStore = Marty.createStore
+module.exports = Marty.createStore
   id: 'PeopleStore'
   displayName: 'PeopleStore'
 
@@ -18,13 +17,10 @@ PeopleStore = Marty.createStore
   findPeople: (pageNumber, searchText) ->
     @fetch
       id: 'all-people'
-      locally: () ->
+      locally: () =>
         @state.people
-      remotely: () ->
-        PeopleQueries.findPeople(pageNumber, searchText)
-
-  paginationMeta: ->
-    @state.meta
+      remotely: () =>
+        @app.people.queries.findPeople(pageNumber, searchText)
 
   receivePeople: (response) ->
     @setState
@@ -34,7 +30,4 @@ PeopleStore = Marty.createStore
   updateSearchText: (text) ->
     @setState
       searchText: text
-
-
-module.exports = PeopleStore
 

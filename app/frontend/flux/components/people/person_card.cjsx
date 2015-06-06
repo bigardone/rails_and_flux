@@ -1,7 +1,6 @@
-React = require 'react/addons'
 classnames = require 'classnames'
 
-PersonCard = React.createClass
+module.exports = React.createClass
   displayName: 'PersonCard'
   mixins: [React.addons.PureRenderMixin]
 
@@ -38,5 +37,3 @@ PersonCard = React.createClass
         </ul>
       </div>
     </div>
-
-module.exports = PersonCard

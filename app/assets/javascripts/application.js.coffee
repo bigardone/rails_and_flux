@@ -5,4 +5,4 @@
 #= require js-routes
 #= require nprogress
 
-#= require main
+#= require application_bundle

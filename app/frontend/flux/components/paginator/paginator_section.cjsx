@@ -1,6 +1,6 @@
 PaginatorLink = require './paginator_link'
 
-PaginatorSection = React.createClass
+module.exports = React.createClass
   displayName: 'PaginatorSection'
 
   _handleOnClick: (pageNumber) ->
@@ -20,5 +20,3 @@ PaginatorSection = React.createClass
       </ul>
     else
       <div>&nbsp;</div>
-
-module.exports = PaginatorSection
