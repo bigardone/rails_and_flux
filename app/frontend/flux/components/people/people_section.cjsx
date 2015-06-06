@@ -21,17 +21,19 @@ PeopleSection = React.createClass
     @app.people.actionCreators.setSearchText value
 
   _renderPeople: ()->
-    if @props.people.length > 0
-      @props.people.map (person) ->
-        <PersonCard key={person.id} {...person}/>
-    else
-      <div className="warning">
-        <span className="fa-stack">
-          <i className="fa fa-meh-o fa-stack-2x"></i>
-        </span>
-        <h4>No people found...</h4>
-        <ResetButton text="Reset filter" styleClass="btn" onResetClick={@_handleOnResetClick}/>
-      </div>
+    if @props.people.length is 0 then return @_renderNoResultsFound()
+
+    @props.people.map (person) ->
+      <PersonCard key={person.id} {...person}/>
+
+  _renderNoResultsFound:->
+    <div className="warning">
+      <span className="fa-stack">
+        <i className="fa fa-meh-o fa-stack-2x"></i>
+      </span>
+      <h4>No people found...</h4>
+      <ResetButton text="Reset filter" styleClass="btn" onResetClick={@_handleOnResetClick}/>
+    </div>
 
   render: ->
     <div>

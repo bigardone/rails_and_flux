@@ -1,4 +1,4 @@
-PeopleAPI = Marty.createStateSource
+module.exports = Marty.createStateSource
   id: 'PeopleAPI'
   type: 'http'
 
@@ -12,5 +12,3 @@ PeopleAPI = Marty.createStateSource
       if res.ok then return res.json()
 
       throw new Error('Error while fetching people', res)
-
-module.exports = PeopleAPI

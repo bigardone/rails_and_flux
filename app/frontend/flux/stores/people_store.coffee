@@ -1,6 +1,6 @@
 PeopleConstants = require '../constants/people_constants'
 
-PeopleStore = Marty.createStore
+module.exports = Marty.createStore
   id: 'PeopleStore'
   displayName: 'PeopleStore'
 
@@ -30,7 +30,4 @@ PeopleStore = Marty.createStore
   updateSearchText: (text) ->
     @setState
       searchText: text
-
-
-module.exports = PeopleStore
 

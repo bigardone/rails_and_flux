@@ -1,4 +1,4 @@
-PaginatorLink = React.createClass
+module.exports = React.createClass
   displayName: 'PaginatorLink'
   mixins: [React.addons.PureRenderMixin]
 
@@ -9,4 +9,3 @@ PaginatorLink = React.createClass
   render: ->
     <a href="#" onClick={this._handleOnClick}>&nbsp;</a>
 
-module.exports = PaginatorLink

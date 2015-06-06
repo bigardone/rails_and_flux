@@ -108,25 +108,27 @@
 	    return this.app.people.actionCreators.setSearchText(value);
 	  },
 	  _renderPeople: function() {
-	    if (this.props.people.length > 0) {
-	      return this.props.people.map(function(person) {
-	        return React.createElement(PersonCard, React.__spread({
-	          "key": person.id
-	        }, person));
-	      });
-	    } else {
-	      return React.createElement("div", {
-	        "className": "warning"
-	      }, React.createElement("span", {
-	        "className": "fa-stack"
-	      }, React.createElement("i", {
-	        "className": "fa fa-meh-o fa-stack-2x"
-	      })), React.createElement("h4", null, "No people found..."), React.createElement(ResetButton, {
-	        "text": "Reset filter",
-	        "styleClass": "btn",
-	        "onResetClick": this._handleOnResetClick
-	      }));
+	    if (this.props.people.length === 0) {
+	      return this._renderNoResultsFound();
 	    }
+	    return this.props.people.map(function(person) {
+	      return React.createElement(PersonCard, React.__spread({
+	        "key": person.id
+	      }, person));
+	    });
+	  },
+	  _renderNoResultsFound: function() {
+	    return React.createElement("div", {
+	      "className": "warning"
+	    }, React.createElement("span", {
+	      "className": "fa-stack"
+	    }, React.createElement("i", {
+	      "className": "fa fa-meh-o fa-stack-2x"
+	    })), React.createElement("h4", null, "No people found..."), React.createElement(ResetButton, {
+	      "text": "Reset filter",
+	      "styleClass": "btn",
+	      "onResetClick": this._handleOnResetClick
+	    }));
 	  },
 	  render: function() {
 	    return React.createElement("div", null, React.createElement(PeopleSearch, {
@@ -186,11 +188,11 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants, PeopleStore;
+	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants;
 
 	PeopleConstants = __webpack_require__(12);
 
-	PeopleStore = Marty.createStore({
+	module.exports = Marty.createStore({
 	  id: 'PeopleStore',
 	  displayName: 'PeopleStore',
 	  getInitialState: function() {
@@ -234,19 +236,17 @@
 	  }
 	});
 
-	module.exports = PeopleStore;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants, PeopleQueries;
+	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants;
 
 	PeopleConstants = __webpack_require__(12);
 
-	PeopleQueries = Marty.createQueries({
+	module.exports = Marty.createQueries({
 	  id: 'PeopleQueries',
 	  findPeople: function(pageNumber, searchText) {
 	    return this.app.people.sources.findPeople(pageNumber, searchText).then((function(_this) {
@@ -259,19 +259,17 @@
 	  }
 	});
 
-	module.exports = PeopleQueries;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleActionCreators, PeopleConstants;
+	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants;
 
 	PeopleConstants = __webpack_require__(12);
 
-	PeopleActionCreators = Marty.createActionCreators({
+	module.exports = Marty.createActionCreators({
 	  id: 'PeopleActionCreators',
 	  findPeople: function(pageNumber, searchText) {
 	    return this.app.people.sources.findPeople(pageNumber, searchText);
@@ -281,17 +279,13 @@
 	  }
 	});
 
-	module.exports = PeopleActionCreators;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleAPI;
-
-	PeopleAPI = Marty.createStateSource({
+	/* WEBPACK VAR INJECTION */(function(Marty) {module.exports = Marty.createStateSource({
 	  id: 'PeopleAPI',
 	  type: 'http',
 	  findPeople: function(pageNumber, searchText) {
@@ -308,8 +302,6 @@
 	    });
 	  }
 	});
-
-	module.exports = PeopleAPI;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
@@ -375,11 +367,11 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(React) {var PeopleSearch, ResetButton;
+	/* WEBPACK VAR INJECTION */(function(React) {var ResetButton;
 
 	ResetButton = __webpack_require__(11);
 
-	PeopleSearch = React.createClass({
+	module.exports = React.createClass({
 	  displayName: 'PeopleSearch',
 	  getInitialState: function() {
 	    return {
@@ -461,19 +453,17 @@
 	  }
 	});
 
-	module.exports = PeopleSearch;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(React) {var PersonCard, classnames;
+	/* WEBPACK VAR INJECTION */(function(React) {var classnames;
 
 	classnames = __webpack_require__(47);
 
-	PersonCard = React.createClass({
+	module.exports = React.createClass({
 	  displayName: 'PersonCard',
 	  mixins: [React.addons.PureRenderMixin],
 	  _birthDate: function() {
@@ -515,19 +505,17 @@
 	  }
 	});
 
-	module.exports = PersonCard;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(React) {var PaginatorLink, PaginatorSection;
+	/* WEBPACK VAR INJECTION */(function(React) {var PaginatorLink;
 
 	PaginatorLink = __webpack_require__(16);
 
-	PaginatorSection = React.createClass({
+	module.exports = React.createClass({
 	  displayName: 'PaginatorSection',
 	  _handleOnClick: function(pageNumber) {
 	    return this.props.onPaginate(pageNumber);
@@ -562,17 +550,13 @@
 	  }
 	});
 
-	module.exports = PaginatorSection;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(React) {var ResetButton;
-
-	ResetButton = React.createClass({
+	/* WEBPACK VAR INJECTION */(function(React) {module.exports = React.createClass({
 	  displayName: 'ResetButton',
 	  _handleOnClick: function(e) {
 	    e.preventDefault();
@@ -587,19 +571,13 @@
 	  }
 	});
 
-	module.exports = ResetButton;
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Marty) {var PeopleConstants;
-
-	PeopleConstants = Marty.createConstants(["FIND_PEOPLE", "RECEIVE_PEOPLE", "SET_SEARCH_TEXT"]);
-
-	module.exports = PeopleConstants;
+	/* WEBPACK VAR INJECTION */(function(Marty) {module.exports = Marty.createConstants(["FIND_PEOPLE", "RECEIVE_PEOPLE", "SET_SEARCH_TEXT"]);
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
@@ -689,9 +667,7 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(React) {var PaginatorLink;
-
-	PaginatorLink = React.createClass({
+	/* WEBPACK VAR INJECTION */(function(React) {module.exports = React.createClass({
 	  displayName: 'PaginatorLink',
 	  mixins: [React.addons.PureRenderMixin],
 	  _handleOnClick: function(e) {
@@ -705,8 +681,6 @@
 	    }, "\u00a0");
 	  }
 	});
-
-	module.exports = PaginatorLink;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 

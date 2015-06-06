@@ -1,4 +1,4 @@
-ResetButton = React.createClass
+module.exports = React.createClass
   displayName: 'ResetButton'
 
   _handleOnClick: (e) ->
@@ -7,5 +7,3 @@ ResetButton = React.createClass
 
   render: ->
     <a className={this.props.styleClass} href="#" onClick={this._handleOnClick}>{this.props.text}</a>
-
-module.exports = ResetButton

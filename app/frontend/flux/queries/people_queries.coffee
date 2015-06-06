@@ -1,6 +1,6 @@
 PeopleConstants = require '../constants/people_constants'
 
-PeopleQueries = Marty.createQueries
+module.exports = Marty.createQueries
   id: 'PeopleQueries'
 
   findPeople: (pageNumber, searchText)->
@@ -9,5 +9,3 @@ PeopleQueries = Marty.createQueries
       @dispatch PeopleConstants.RECEIVE_PEOPLE, res
     .catch (err) ->
       console.log err
-
-module.exports = PeopleQueries

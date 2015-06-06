@@ -1,6 +1,6 @@
 PeopleConstants = require '../constants/people_constants'
 
-PeopleActionCreators = Marty.createActionCreators
+module.exports = Marty.createActionCreators
   id: 'PeopleActionCreators'
 
   findPeople: (pageNumber, searchText)->
@@ -8,5 +8,3 @@ PeopleActionCreators = Marty.createActionCreators
 
   setSearchText: (text) ->
     @dispatch PeopleConstants.SET_SEARCH_TEXT, text
-
-module.exports = PeopleActionCreators
