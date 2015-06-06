@@ -11,8 +11,9 @@
     "babel-loader": "^4.2.0"
   },
   "dependencies": {
-    "react": "~0.13.1",
+    "classnames": "1.2.0",
     "marty": "~0.10.0",
-    "classnames": "1.2.0"
+    "moment": "^2.10.3",
+    "react": "~0.13.1"
   }
 }
