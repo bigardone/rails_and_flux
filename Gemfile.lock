@@ -1,23 +1,10 @@
 GIT
-  remote: git://github.com/caarlos0/nprogress-rails.git
-  revision: 463ef422cdf5c478aebf6f2733bbba86d87fd097
-  specs:
-    nprogress-rails (0.1.6.7)
-
-GIT
   remote: git://github.com/ctran/annotate_models.git
   revision: 0146ee7b9a70d530a30a5e220c94d5e353624671
   specs:
     annotate (2.6.10)
       activerecord (>= 3.2, <= 4.3)
       rake (~> 10.4)
-
-GIT
-  remote: git://github.com/derekprior/momentjs-rails.git
-  revision: 9fac38f9b7603ad5da4cba4d971654370f9e2d7b
-  specs:
-    momentjs-rails (2.10.2)
-      railties (>= 3.1)
 
 GIT
   remote: git://github.com/rails-api/active_model_serializers.git
@@ -248,10 +235,8 @@ DEPENDENCIES
   jquery-rails
   js-routes!
   kaminari
-  momentjs-rails!
   neat
   newrelic_rpm
-  nprogress-rails!
   pg
   pg_search
   rails
