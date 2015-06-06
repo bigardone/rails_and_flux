@@ -3,11 +3,6 @@ PeopleSection = require './flux/components/people/people_section'
 ApplicationContainer = Marty.ApplicationContainer
 
 $ ->
-  NProgress.configure
-    showSpinner: false
-    ease: 'ease'
-    speed: 500
-
   MainApplication = Marty.createApplication () ->
     @register
       people:
