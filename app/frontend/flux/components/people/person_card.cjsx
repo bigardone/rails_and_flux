@@ -1,4 +1,5 @@
 classnames = require 'classnames'
+moment = require 'moment'
 
 module.exports = React.createClass
   displayName: 'PersonCard'
