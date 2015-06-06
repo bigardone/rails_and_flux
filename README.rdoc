@@ -7,13 +7,15 @@ This is a real use case application using:
 * Marty.js for implementing Flux
 * PostgreSQL full-text search
 
-To test it, just fork it and run:
+To install it, just clone it and run:
     
     $ gem install foreman
     $ bundle install
     $ npm install -g webpack
     $ npm install
     $ db:setup
+
+To run it:
     $ foreman start -f Procfile.dev
 
 Happy coding!
