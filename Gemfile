@@ -44,6 +44,10 @@ group :development, :test do
   gem 'thin'
 end
 
+group :development do
+  gem 'foreman'
+end
+
 group :production do
   gem 'rails_12factor'
 end
