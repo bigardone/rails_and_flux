@@ -11,12 +11,12 @@ module.exports = React.createClass
       if i == @props.currentPage
         <li key={i}><span>&nbsp;</span></li>
       else
-        <li key={i}><PaginatorLink pageNumber={i} onPaginatorLinkClick={this._handleOnClick} /></li>
+        <li key={i}><PaginatorLink pageNumber={i} onPaginatorLinkClick={@_handleOnClick} /></li>
 
   render: ->
     if @props.totalPages > 1
       <ul className="pagination">
-        {this._renderLinks()}
+        {@_renderLinks()}
       </ul>
     else
       <div>&nbsp;</div>

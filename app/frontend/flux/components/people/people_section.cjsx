@@ -6,19 +6,8 @@ ResetButton = require '../buttons/reset_button'
 PeopleSection = React.createClass
   displayName: 'PeopleSection'
 
-  _retrieveResultsPage: (pageNumber)->
+  _paginateResults: (pageNumber)->
     @app.people.queries.findPeople pageNumber, @props.searchText
-
-  _handleOnSearchSubmit: (searchText) ->
-    @app.people.actionCreators.setSearchText searchText
-    @app.people.queries.findPeople '', searchText
-
-  _handleOnResetClick: ->
-    @app.people.actionCreators.setSearchText ''
-    @app.people.queries.findPeople '', ''
-
-  _handleOnSearchChange: (value) ->
-    @app.people.actionCreators.setSearchText value
 
   _renderPeople: ()->
     if @props.people.length is 0 then return @_renderNoResultsFound()
@@ -32,19 +21,18 @@ PeopleSection = React.createClass
         <i className="fa fa-meh-o fa-stack-2x"></i>
       </span>
       <h4>No people found...</h4>
-      <ResetButton text="Reset filter" styleClass="btn" onResetClick={@_handleOnResetClick}/>
+      <ResetButton text="Reset filter" styleClass="btn" />
     </div>
 
   render: ->
     <div>
-      <PeopleSearch totalCount={@props.meta.total_count} onFormSubmit={@_handleOnSearchSubmit} value={@props.searchText}/>
-      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_retrieveResultsPage}/>
+      <PeopleSearch totalCount={@props.meta.total_count} value={@props.searchText}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_paginateResults}/>
       <div className="cards-wrapper">
         {@_renderPeople()}
       </div>
-      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_retrieveResultsPage}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_paginateResults}/>
     </div>
-
 
 module.exports = Marty.createContainer PeopleSection,
   listenTo: 'people.store'

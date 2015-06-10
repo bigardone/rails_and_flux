@@ -3,8 +3,14 @@ ResetButton = require '../buttons/reset_button'
 module.exports = React.createClass
   displayName: 'PeopleSearch'
 
+  mixins: [
+    React.addons.LinkedStateMixin
+    Marty.createAppMixin()
+  ]
+
   getInitialState: ->
     searchLength: 0
+    value: ''
 
   componentDidMount: ->
     @_subscribeToEvents()
@@ -20,8 +26,8 @@ module.exports = React.createClass
   _handleOnSubmit: (e) ->
     e.preventDefault()
 
-    searchValue = @state.value
-    @props.onFormSubmit(searchValue)
+    @app.people.actionCreators.setSearchText @state.value
+    @app.people.queries.findPeople '', @state.value
 
   _handleSearchOnKeyup: (e) ->
     @setState
@@ -30,20 +36,10 @@ module.exports = React.createClass
   _personText: (count) ->
     if count > 1 then 'people' else 'person'
 
-  _handleOnResetClick: ->
-    @refs.search.getDOMNode().value = ''
-    @props.onFormSubmit('')
-    @setState
-      searchLength: 0
-
   _renderResetButton: ->
     return false unless @state.searchLength != 0
 
-    <ResetButton text="Reset filter" styleClass="reset"  onResetClick={this._handleOnResetClick}/>
-
-  _onChange: ->
-    @setState
-      value: @refs.search.getDOMNode().value.trim()
+    <ResetButton text="Reset filter" styleClass="reset"/>
 
   render: ->
     count = @props.totalCount
@@ -56,9 +52,9 @@ module.exports = React.createClass
         &nbsp;
       </div>
       <div className="form-wrapper">
-        <form onSubmit={this._handleOnSubmit}>
-          {this._renderResetButton()}
-          <input ref="search" placeholder="Search people..." type="search" value={this.state.value} onChange={this._onChange}/>
+        <form onSubmit={@_handleOnSubmit}>
+          {@_renderResetButton()}
+          <input ref="search" placeholder="Search people..." type="search" valueLink={@linkState('value')} />
         </form>
       </div>
     </div>

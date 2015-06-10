@@ -1,3 +1,4 @@
+window.Marty = Marty
 Marty.HttpStateSource.removeHook('parseJSON')
 PeopleSection = require './flux/components/people/people_section'
 ApplicationContainer = Marty.ApplicationContainer

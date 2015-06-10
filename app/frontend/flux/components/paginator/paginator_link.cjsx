@@ -7,5 +7,5 @@ module.exports = React.createClass
     @props.onPaginatorLinkClick(@props.pageNumber)
 
   render: ->
-    <a href="#" onClick={this._handleOnClick}>&nbsp;</a>
+    <a href="#" onClick={@_handleOnClick}>&nbsp;</a>
 

@@ -13,6 +13,7 @@ module.exports = Marty.createStore
   handlers:
     receivePeople: PeopleConstants.RECEIVE_PEOPLE
     updateSearchText: PeopleConstants.SET_SEARCH_TEXT
+    resetSearch: PeopleConstants.RESET_SEARCH
 
   findPeople: (pageNumber, searchText) ->
     @fetch
@@ -30,4 +31,8 @@ module.exports = Marty.createStore
   updateSearchText: (text) ->
     @setState
       searchText: text
+
+  resetSearch: ->
+    @setState
+      searchText: ''
 

@@ -1,9 +1,13 @@
 module.exports = React.createClass
   displayName: 'ResetButton'
 
+  mixins: [
+    Marty.createAppMixin()
+  ]
+
   _handleOnClick: (e) ->
     e.preventDefault()
-    @props.onResetClick()
+    @app.people.actionCreators.resetSearch()
 
   render: ->
-    <a className={this.props.styleClass} href="#" onClick={this._handleOnClick}>{this.props.text}</a>
+    <a className={@props.styleClass} href="#" onClick={@_handleOnClick}>{@props.text}</a>
