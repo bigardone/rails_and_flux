@@ -1,4 +1,4 @@
-class PeopleController < ApplicationController
+class Api::V1::PeopleController < ApplicationController
   before_filter :search_people
 
   def index

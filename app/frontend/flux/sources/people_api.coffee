@@ -3,7 +3,7 @@ module.exports = Marty.createStateSource
   type: 'http'
 
   findPeople: (pageNumber, searchText) ->
-    url = Routes.people_path(
+    url = Routes.api_v1_people_path(
       page: pageNumber
       search: searchText
     )
