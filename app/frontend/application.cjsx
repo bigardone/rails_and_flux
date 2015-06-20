@@ -12,8 +12,6 @@ $ ->
         actionCreators: require './flux/actionCreators/people_action_creators'
         sources: require './flux/sources/people_api'
 
-
   appContainer = <ApplicationContainer app={new MainApplication()}><PeopleSection/></ApplicationContainer>
-
-
+  
   React.render appContainer, document.getElementById('people_list')
