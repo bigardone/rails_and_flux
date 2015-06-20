@@ -6,7 +6,7 @@ ResetButton = require '../buttons/reset_button'
 PeopleSection = React.createClass
   displayName: 'PeopleSection'
 
-  _paginateResults: (pageNumber)->
+  _handlePageNumberClicked: (pageNumber)->
     @app.people.queries.findPeople pageNumber, @props.searchText
 
   _renderPeople: ()->
@@ -27,11 +27,11 @@ PeopleSection = React.createClass
   render: ->
     <div>
       <PeopleSearch totalCount={@props.meta.total_count} value={@props.searchText}/>
-      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_paginateResults}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} pageNumberClicked={@_handlePageNumberClicked}/>
       <div className="cards-wrapper">
         {@_renderPeople()}
       </div>
-      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} onPaginate={@_paginateResults}/>
+      <PaginatorSection totalPages={@props.meta.total_pages} currentPage={@props.meta.current_page} pageNumberClicked={@_handlePageNumberClicked}/>
     </div>
 
 module.exports = Marty.createContainer PeopleSection,

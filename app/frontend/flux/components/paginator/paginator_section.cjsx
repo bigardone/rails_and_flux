@@ -4,7 +4,7 @@ module.exports = React.createClass
   displayName: 'PaginatorSection'
 
   _handleOnClick: (pageNumber) ->
-    @props.onPaginate(pageNumber)
+    @props.pageNumberClicked(pageNumber)
 
   _renderLinks: ->
     for i in [1..@props.totalPages]
