@@ -9,13 +9,13 @@ PeopleSection = React.createClass
   _handlePageNumberClicked: (pageNumber)->
     @app.people.queries.findPeople pageNumber, @props.searchText
 
-  _renderPeople: ()->
+  _renderPeople: ->
     if @props.people.length is 0 then return @_renderNoResultsFound()
 
     @props.people.map (person) ->
       <PersonCard key={person.id} {...person}/>
 
-  _renderNoResultsFound:->
+  _renderNoResultsFound: ->
     <div className="warning">
       <span className="fa-stack">
         <i className="fa fa-meh-o fa-stack-2x"></i>
@@ -50,7 +50,7 @@ module.exports = Marty.createContainer PeopleSection,
       </span>
       <h4>Searching...</h4>
     </div>
-  failed: (errors)->
+  failed: (errors) ->
     <div className="warning">
       <span className="fa-stack">
         <i className="fa fa-exclamation-triangle fa-stack-2x"></i>
