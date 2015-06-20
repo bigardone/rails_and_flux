@@ -15,13 +15,13 @@ module.exports = Marty.createStore
     updateSearchText: PeopleConstants.SET_SEARCH_TEXT
     resetSearch: PeopleConstants.RESET_SEARCH
 
-  findPeople: (pageNumber, searchText) ->
+  fetchPeople: () ->
     @fetch
       id: 'all-people'
       locally: () =>
         @state.people
       remotely: () =>
-        @app.people.queries.findPeople(pageNumber, searchText)
+        @app.people.queries.findPeople()
 
   receivePeople: (response) ->
     @setState

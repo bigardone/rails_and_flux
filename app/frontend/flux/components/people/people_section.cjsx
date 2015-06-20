@@ -38,7 +38,7 @@ module.exports = Marty.createContainer PeopleSection,
   listenTo: 'people.store'
   fetch:
     people: ->
-      @app.people.store.findPeople '', ''
+      @app.people.store.fetchPeople()
     meta: ->
       @app.people.store.getState().meta
     searchText: ->
