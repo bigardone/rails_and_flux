@@ -2,7 +2,6 @@ PeopleConstants = require '../constants/people_constants'
 
 module.exports = Marty.createStore
   id: 'PeopleStore'
-  displayName: 'PeopleStore'
 
   getInitialState: ->
     searchText: ''
