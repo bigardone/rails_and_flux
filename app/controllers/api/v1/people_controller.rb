@@ -14,6 +14,12 @@ class Api::V1::PeopleController < ApplicationController
     }
   end
 
+  def show
+    person = Person.find params[:id]
+
+    render json: person
+  end
+
   private
 
   def search_people

@@ -9,3 +9,6 @@ module.exports = Marty.createActionCreators
   resetSearch: () ->
     @dispatch PeopleConstants.RESET_SEARCH
     @app.people.queries.findPeople 1, ''
+
+  resetCurrentPerson: ->
+    @dispatch PeopleConstants.RESET_CURRENT_PERSON
