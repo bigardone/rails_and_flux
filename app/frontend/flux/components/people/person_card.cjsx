@@ -1,5 +1,6 @@
 classnames = require 'classnames'
 moment = require 'moment'
+Link = require('react-router').Link
 
 module.exports = React.createClass
   displayName: 'PersonCard'
@@ -18,7 +19,9 @@ module.exports = React.createClass
       <header>
         <div className="avatar-wrapper">
           &nbsp;
-          <img className="avatar" src={@props.picture} />
+          <Link to="person" params={id: @props.id}>
+            <img className="avatar" src={@props.picture} />
+          </Link>
         </div>
         <div className="info-wrapper">
           <h4>{@props.first_name} {@props.last_name}</h4>
