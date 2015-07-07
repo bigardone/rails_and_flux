@@ -13,6 +13,8 @@ module.exports = Marty.createStore
     receivePeople: PeopleConstants.RECEIVE_PEOPLE
     updateSearchText: PeopleConstants.SET_SEARCH_TEXT
     resetSearch: PeopleConstants.RESET_SEARCH
+    receiveCurrentPerson: PeopleConstants.RECEIVE_CURRENT_PERSON
+    resetCurrentPerson: PeopleConstants.RESET_CURRENT_PERSON
 
   fetchPeople: () ->
     @fetch
@@ -34,4 +36,21 @@ module.exports = Marty.createStore
   resetSearch: ->
     @setState
       searchText: ''
+
+  getPerson: (id) ->
+    @fetch
+      id: "person-#{id}"
+      locally: () =>
+        @state.currentPerson
+      remotely: () =>
+        @app.people.queries.findPerson(id)
+
+  receiveCurrentPerson: (person) ->
+    @setState
+      currentPerson: person
+
+  resetCurrentPerson: ->
+    @setState
+      currentPerson: undefined
+
 
