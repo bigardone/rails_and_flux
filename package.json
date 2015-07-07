@@ -12,8 +12,9 @@
   },
   "dependencies": {
     "classnames": "1.2.0",
-    "marty": "~0.10.0",
+    "marty": "^0.10.4",
     "moment": "^2.10.3",
-    "react": "~0.13.1"
+    "react": "~0.13.1",
+    "react-router": "^0.13.3"
   }
 }
